@@ -16,9 +16,9 @@ DSci/
 │   │   │   ├── traffic_accidents/
 │   │   │   └── Combined_Flights_2022/
 │   │   └── report/          # LaTeX report files
+│   ├── requirements.txt         # Python dependencies
 │   └── venv/                # Python virtual environment
-├── forecasting/             # Forecasting datasets
-└── requirements.txt         # Python dependencies
+└── forecasting/             # Forecasting datasets
 ```
 
 ## Setup Instructions
