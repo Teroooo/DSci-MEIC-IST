@@ -73,109 +73,284 @@
 	\section*{\fontsize{0.75cm}{1cm}\selectfont CLASSIFICATION}
 \end{center}
 
-\section{DATA PROFILING}
-\ctext[RGB]{190,190,190}{May be used to describe any useful observation about the data, and that was used in the current project. An example is the use of any domain knowledge to process the data or evaluate the results. \textbf{Shall not exceed 200 characters.}}
-
-\subsection*{\textit{Data Dimensionality}}
-\ctext[RGB]{190,190,190}{Shall contain all relevant information and charts respecting to the data dimensionality perspective, such as the number of records and number of dimensions, and their impact on the following analysis. \textbf{Shall not exceed 500 characters.}}
+\section{DATA CLEANING}
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Nr Records x Nr variables for dataset 1 (left) and dataset 2 (right)}
+\centering\includegraphics[width=0.8\textwidth]{snippet1.png}
+\caption{Dropping all empty variables and all records with missing values.}
 \end{figure}
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Nr variables per type for dataset 1 (left) and dataset 2 (right)}
+\centering\includegraphics[width=\textwidth]{snippet2.png}
+\caption{Discard all non-numeric data excluding the target variable.}
+\end{figure}
+
+\section{RESULTS}
+
+\subsection{Model Performance Summary}
+
+\begin{table}[H]
+\centering
+\caption{Performance Metrics - Traffic Accidents Dataset}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Model} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} \\
+\hline
+Naïve Bayes & 0.999 & 0.999 & 0.999 & 0.999 \\
+Logistic Regression & 1.000 & 1.000 & 1.000 & 1.000 \\
+KNN & 1.000 & 1.000 & 1.000 & 1.000 \\
+Decision Tree & 1.000 & 1.000 & 1.000 & 1.000 \\
+Multi-layer Perceptron & 1.000 & 1.000 & 1.000 & 1.000 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Performance Metrics - Combined Flights 2022 Dataset}
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\textbf{Model} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} \\
+\hline
+Naïve Bayes & - & - & - & - \\
+Logistic Regression & - & - & - & - \\
+KNN & - & - & - & - \\
+Decision Tree & - & - & - & - \\
+Multi-layer Perceptron & - & - & - & - \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Best Hyperparameters}
+
+\begin{table}[H]
+\centering
+\caption{Optimal Hyperparameters - Traffic Accidents}
+\small
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Model} & \textbf{Best Hyperparameters} \\
+\hline
+Naïve Bayes & var\_smoothing: 1e-10 \\
+\hline
+Logistic Regression & C: 215.44, solver: lbfgs, max\_iter: 1000 \\
+\hline
+KNN & n\_neighbors: 5, weights: distance, metric: manhattan \\
+\hline
+Decision Tree & criterion: gini, max\_depth: 5, min\_samples\_split: 2, min\_samples\_leaf: 1 \\
+\hline
+Multi-layer Perceptron & hidden\_layer\_sizes: (50,), activation: tanh, alpha: 0.0001, learning\_rate: constant \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Optimal Hyperparameters - Combined Flights 2022}
+\small
+\begin{tabular}{|l|p{10cm}|}
+\hline
+\textbf{Model} & \textbf{Best Hyperparameters} \\
+\hline
+Naïve Bayes & - \\
+\hline
+Logistic Regression & - \\
+\hline
+KNN & - \\
+\hline
+Decision Tree & - \\
+\hline
+Multi-layer Perceptron & - \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Naïve Bayes}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{traffic_accidents/nb_hyperparameter_study.png}
+    \caption{Traffic Accidents - Hyperparameter Study}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{Combined_Flights_2022/nb_hyperparameter_study.png}
+    \caption{Combined Flights - Hyperparameter Study}
+\end{subfigure}
+\caption{Naïve Bayes: Hyperparameter Tuning Results}
 \end{figure}
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Nr missing values for dataset 1 (left) and dataset 2 (right)}
+\centering
+\begin{subfigure}{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{traffic_accidents/naïve_bayes_performance.png}
+    \caption{Traffic Accidents - Performance}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{Combined_Flights_2022/naïve_bayes_performance.png}
+    \caption{Combined Flights - Performance}
+\end{subfigure}
+\caption{Naïve Bayes: Model Performance}
 \end{figure}
 
-\subsection*{\textit{Data Distribution}}
-\ctext[RGB]{190,190,190}{Shall contain all relevant information and charts respecting to the data distribution perspective, such as each variable distribution, type, domain and range. May be used to describe any useful observation about the data, and that was used in the current project.  \textbf{Shall not exceed 500 characters.}} 
+\subsection{Logistic Regression}
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Global boxplots dataset 1 (left) and dataset 2 (right)}
-\end{figure}
-
-\begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Single variables boxplots for dataset 1}
-\end{figure}
-
-\begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Single variables boxplots for dataset 2}
-\end{figure}
-
-\begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Histograms for dataset 1} %(with distributions is enough)
-\end{figure}
-
-\begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Histograms for dataset 2} %(with distributions is enough)
-\end{figure}
-
-\begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Outliers study dataset 1}
+\centering
+\begin{subfigure}{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{traffic_accidents/lr_hyperparameter_study.png}
+    \caption{Traffic Accidents - Hyperparameter Study}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.49\textwidth}
+    \centering
+    %\includegraphics[width=\textwidth]{Combined_Flights_2022/lr_hyperparameter_study.png}
+    \caption{Combined Flights - Hyperparameter Study}
+\end{subfigure}
+\caption{Logistic Regression: Hyperparameter Tuning Results}
 \end{figure}
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Outliers study dataset 2}
+\centering
+\begin{subfigure}{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{traffic_accidents/logistic_regression_performance.png}
+    \caption{Traffic Accidents - Performance}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.49\textwidth}
+    \centering
+    %\includegraphics[width=\textwidth]{Combined_Flights_2022/logistic_regression_performance.png}
+    \caption{Combined Flights - Performance}
+\end{subfigure}
+\caption{Logistic Regression: Model Performance}
+\end{figure}
+
+\subsection{K-Nearest Neighbors (KNN)}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{traffic_accidents/knn_hyperparameter_study.png}
+    \caption{Traffic Accidents - Hyperparameter Study}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.49\textwidth}
+    \centering
+    %\includegraphics[width=\textwidth]{Combined_Flights_2022/knn_hyperparameter_study.png}
+    \caption{Combined Flights - Hyperparameter Study}
+\end{subfigure}
+\caption{KNN: Hyperparameter Tuning Results}
 \end{figure}
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Class distribution for dataset 1}
+\centering
+\begin{subfigure}{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{traffic_accidents/knn_performance.png}
+    \caption{Traffic Accidents - Performance}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.49\textwidth}
+    \centering
+    %\includegraphics[width=\textwidth]{Combined_Flights_2022/knn_performance.png}
+    \caption{Combined Flights - Performance}
+\end{subfigure}
+\caption{KNN: Model Performance}
+\end{figure}
+
+\subsection{Decision Tree}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{traffic_accidents/dt_hyperparameter_study.png}
+    \caption{Traffic Accidents - Hyperparameter Study}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.49\textwidth}
+    \centering
+    %\includegraphics[width=\textwidth]{Combined_Flights_2022/dt_hyperparameter_study.png}
+    \caption{Combined Flights - Hyperparameter Study}
+\end{subfigure}
+\caption{Decision Tree: Hyperparameter Tuning Results}
 \end{figure}
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Class distribution for dataset 2}
+\centering
+\begin{subfigure}{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{traffic_accidents/decision_tree_performance.png}
+    \caption{Traffic Accidents - Performance}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.49\textwidth}
+    \centering
+    %\includegraphics[width=\textwidth]{Combined_Flights_2022/decision_tree_performance.png}
+    \caption{Combined Flights - Performance}
+\end{subfigure}
+\caption{Decision Tree: Model Performance}
 \end{figure}
 
-\subsection*{\textit{Data Granularity}}
-\ctext[RGB]{190,190,190}{Shall contain all relevant information and charts respecting to the data granularity perspective, such as the impact of different granularities considered for each variable. May present additional taxonomies if needed.  \textbf{Shall not exceed 500 characters.}}
+\subsection{Multi-layer Perceptron}
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Granularity analysis for dataset 1}
-\end{figure}
-
-\begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Granularity analysis for dataset 2}
-\end{figure}
-
-\subsection*{\textit{Data Sparsity}}
-\ctext[RGB]{190,190,190}{Shall contain all relevant information and charts respecting to the data sparsity perspective, such as domain coverage and correlation among variables.  \textbf{Shall not exceed 500 characters.}}
-
-\begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Sparsity analysis for dataset 1}
-\end{figure}
-
-\begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Sparsity analysis for dataset 2}
-\end{figure}
-
-\begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Correlation analysis for dataset 1}
+\centering
+\begin{subfigure}{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{traffic_accidents/mlp_hyperparameter_study.png}
+    \caption{Traffic Accidents - Hyperparameter Study}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.49\textwidth}
+    \centering
+    %\includegraphics[width=\textwidth]{Combined_Flights_2022/mlp_hyperparameter_study.png}
+    \caption{Combined Flights - Hyperparameter Study}
+\end{subfigure}
+\caption{Multi-layer Perceptron: Hyperparameter Tuning Results}
 \end{figure}
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Correlation analysis for dataset 2}
+\centering
+\begin{subfigure}{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{traffic_accidents/multi_layer_perceptron_performance.png}
+    \caption{Traffic Accidents - Performance}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.49\textwidth}
+    \centering
+    %\includegraphics[width=\textwidth]{Combined_Flights_2022/multi_layer_perceptron_performance.png}
+    \caption{Combined Flights - Performance}
+\end{subfigure}
+\caption{Multi-layer Perceptron: Model Performance}
+\end{figure}
+
+\subsection{Overall Model Comparison}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.49\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{traffic_accidents/model_performance_comparison.png}
+    \caption{Traffic Accidents Dataset}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.49\textwidth}
+    \centering
+    %\includegraphics[width=\textwidth]{Combined_Flights_2022/model_performance_comparison.png}
+    \caption{Combined Flights 2022 Dataset}
+\end{subfigure}
+\caption{Overall Performance Comparison Across All Models}
 \end{figure}
 
 \end{document}
