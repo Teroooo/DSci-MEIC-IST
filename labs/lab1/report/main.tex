@@ -96,11 +96,11 @@
 \hline
 \textbf{Model} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} \\
 \hline
-Naïve Bayes & 0.999 & 0.999 & 0.999 & 0.999 \\
-Logistic Regression & 1.000 & 1.000 & 1.000 & 1.000 \\
-KNN & 1.000 & 1.000 & 1.000 & 1.000 \\
-Decision Tree & 1.000 & 1.000 & 1.000 & 1.000 \\
-Multi-layer Perceptron & 1.000 & 1.000 & 1.000 & 1.000 \\
+Naïve Bayes & 0.823 & 0.863 & 0.823 & 0.813 \\
+Logistic Regression & 0.821 & 0.864 & 0.821 & 0.811 \\
+KNN & 0.811 & 0.822 & 0.811 & 0.806 \\
+Decision Tree & 0.829 & 0.859 & 0.829 & 0.821 \\
+Multi-layer Perceptron & 0.829 & 0.859 & 0.829 & 0.821 \\
 \hline
 \end{tabular}
 \end{table}
@@ -112,11 +112,11 @@ Multi-layer Perceptron & 1.000 & 1.000 & 1.000 & 1.000 \\
 \hline
 \textbf{Model} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} \\
 \hline
-Naïve Bayes & - & - & - & - \\
-Logistic Regression & - & - & - & - \\
-KNN & - & - & - & - \\
-Decision Tree & - & - & - & - \\
-Multi-layer Perceptron & - & - & - & - \\
+Naïve Bayes & 0.968 & 0.943 & 0.968 & 0.955 \\
+Logistic Regression & 0.970 & 0.971 & 0.970 & 0.956 \\
+KNN & 0.970 & 0.954 & 0.970 & 0.956 \\
+Decision Tree & 0.971 & 0.962 & 0.971 & 0.960 \\
+Multi-layer Perceptron & 0.970 & 0.970 & 0.970 & 0.956 \\
 \hline
 \end{tabular}
 \end{table}
@@ -131,15 +131,15 @@ Multi-layer Perceptron & - & - & - & - \\
 \hline
 \textbf{Model} & \textbf{Best Hyperparameters} \\
 \hline
-Naïve Bayes & var\_smoothing: 1e-10 \\
+Naïve Bayes & var\_smoothing: 0.001 \\
 \hline
-Logistic Regression & C: 215.44, solver: lbfgs, max\_iter: 1000 \\
+Logistic Regression & C: 0.01, solver: lbfgs, max\_iter: 500 \\
 \hline
-KNN & n\_neighbors: 5, weights: distance, metric: manhattan \\
+KNN & n\_neighbors: 7, weights: uniform, metric: euclidean \\
 \hline
-Decision Tree & criterion: gini, max\_depth: 5, min\_samples\_split: 2, min\_samples\_leaf: 1 \\
+Decision Tree & criterion: gini, max\_depth: 5, min\_samples\_split: 10, min\_samples\_leaf: 1 \\
 \hline
-Multi-layer Perceptron & hidden\_layer\_sizes: (50,), activation: tanh, alpha: 0.0001, learning\_rate: constant \\
+Multi-layer Perceptron & hidden\_layer\_sizes: (50,), activation: relu, alpha: 0.0001, learning\_rate: adaptive \\
 \hline
 \end{tabular}
 \end{table}
@@ -152,15 +152,15 @@ Multi-layer Perceptron & hidden\_layer\_sizes: (50,), activation: tanh, alpha: 0
 \hline
 \textbf{Model} & \textbf{Best Hyperparameters} \\
 \hline
-Naïve Bayes & - \\
+Naïve Bayes & var\_smoothing: 1e-10 \\
 \hline
-Logistic Regression & - \\
+Logistic Regression & C: 0.01, solver: lbfgs, max\_iter: 500 \\
 \hline
-KNN & - \\
+KNN & n\_neighbors: 7, weights: uniform, metric: euclidean \\
 \hline
-Decision Tree & - \\
+Decision Tree & criterion: gini, max\_depth: 10, min\_samples\_split: 2, min\_samples\_leaf: 4 \\
 \hline
-Multi-layer Perceptron & - \\
+Multi-layer Perceptron & hidden\_layer\_sizes: (100,), activation: relu, alpha: 0.0001, learning\_rate: adaptive \\
 \hline
 \end{tabular}
 \end{table}
@@ -211,7 +211,7 @@ Multi-layer Perceptron & - \\
 \hfill
 \begin{subfigure}{0.49\textwidth}
     \centering
-    %\includegraphics[width=\textwidth]{Combined_Flights_2022/lr_hyperparameter_study.png}
+    \includegraphics[width=\textwidth]{Combined_Flights_2022/lr_hyperparameter_study.png}
     \caption{Combined Flights - Hyperparameter Study}
 \end{subfigure}
 \caption{Logistic Regression: Hyperparameter Tuning Results}
@@ -227,7 +227,7 @@ Multi-layer Perceptron & - \\
 \hfill
 \begin{subfigure}{0.49\textwidth}
     \centering
-    %\includegraphics[width=\textwidth]{Combined_Flights_2022/logistic_regression_performance.png}
+    \includegraphics[width=\textwidth]{Combined_Flights_2022/logistic_regression_performance.png}
     \caption{Combined Flights - Performance}
 \end{subfigure}
 \caption{Logistic Regression: Model Performance}
@@ -245,7 +245,7 @@ Multi-layer Perceptron & - \\
 \hfill
 \begin{subfigure}{0.49\textwidth}
     \centering
-    %\includegraphics[width=\textwidth]{Combined_Flights_2022/knn_hyperparameter_study.png}
+    \includegraphics[width=\textwidth]{Combined_Flights_2022/knn_hyperparameter_study.png}
     \caption{Combined Flights - Hyperparameter Study}
 \end{subfigure}
 \caption{KNN: Hyperparameter Tuning Results}
@@ -261,7 +261,7 @@ Multi-layer Perceptron & - \\
 \hfill
 \begin{subfigure}{0.49\textwidth}
     \centering
-    %\includegraphics[width=\textwidth]{Combined_Flights_2022/knn_performance.png}
+    \includegraphics[width=\textwidth]{Combined_Flights_2022/knn_performance.png}
     \caption{Combined Flights - Performance}
 \end{subfigure}
 \caption{KNN: Model Performance}
@@ -279,7 +279,7 @@ Multi-layer Perceptron & - \\
 \hfill
 \begin{subfigure}{0.49\textwidth}
     \centering
-    %\includegraphics[width=\textwidth]{Combined_Flights_2022/dt_hyperparameter_study.png}
+    \includegraphics[width=\textwidth]{Combined_Flights_2022/dt_hyperparameter_study.png}
     \caption{Combined Flights - Hyperparameter Study}
 \end{subfigure}
 \caption{Decision Tree: Hyperparameter Tuning Results}
@@ -295,7 +295,7 @@ Multi-layer Perceptron & - \\
 \hfill
 \begin{subfigure}{0.49\textwidth}
     \centering
-    %\includegraphics[width=\textwidth]{Combined_Flights_2022/decision_tree_performance.png}
+    \includegraphics[width=\textwidth]{Combined_Flights_2022/decision_tree_performance.png}
     \caption{Combined Flights - Performance}
 \end{subfigure}
 \caption{Decision Tree: Model Performance}
@@ -313,7 +313,7 @@ Multi-layer Perceptron & - \\
 \hfill
 \begin{subfigure}{0.49\textwidth}
     \centering
-    %\includegraphics[width=\textwidth]{Combined_Flights_2022/mlp_hyperparameter_study.png}
+    \includegraphics[width=\textwidth]{Combined_Flights_2022/mlp_hyperparameter_study.png}
     \caption{Combined Flights - Hyperparameter Study}
 \end{subfigure}
 \caption{Multi-layer Perceptron: Hyperparameter Tuning Results}
@@ -329,7 +329,7 @@ Multi-layer Perceptron & - \\
 \hfill
 \begin{subfigure}{0.49\textwidth}
     \centering
-    %\includegraphics[width=\textwidth]{Combined_Flights_2022/multi_layer_perceptron_performance.png}
+    \includegraphics[width=\textwidth]{Combined_Flights_2022/multi_layer_perceptron_performance.png}
     \caption{Combined Flights - Performance}
 \end{subfigure}
 \caption{Multi-layer Perceptron: Model Performance}
@@ -347,7 +347,7 @@ Multi-layer Perceptron & - \\
 \hfill
 \begin{subfigure}{0.49\textwidth}
     \centering
-    %\includegraphics[width=\textwidth]{Combined_Flights_2022/model_performance_comparison.png}
+    \includegraphics[width=\textwidth]{Combined_Flights_2022/model_performance_comparison.png}
     \caption{Combined Flights 2022 Dataset}
 \end{subfigure}
 \caption{Overall Performance Comparison Across All Models}

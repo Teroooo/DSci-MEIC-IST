@@ -19,36 +19,73 @@ warnings.filterwarnings('ignore')
 sns.set_style("whitegrid")
 plt.rcParams['figure.figsize'] = (12, 6)
 
-def load_and_clean_data(filepath, target_column):
+def load_and_clean_data(filepath, target_column, dataset_name=None):
     """Load data and perform cleaning operations"""
     print(f"Loading data from {filepath}...")
     df = pd.read_csv(filepath)
     
     print(f"Original shape: {df.shape}")
+    
+    # Sample large datasets for faster training (only for flights)
+    if dataset_name == 'Combined_Flights_2022' and len(df) > 500000:
+        print(f"Sampling 500,000 records from {len(df)} for faster training...")
+        df = df.sample(n=500000, random_state=42)
+        print(f"Sampled shape: {df.shape}")
+    
     print(f"Missing values per column:\n{df.isnull().sum()}")
     
     # Drop columns that are completely empty
     df = df.dropna(axis=1, how='all')
     
-    # Drop rows with any missing values
-    df = df.dropna(axis=0, how='any')
-    
-    # PREPROCESSING: Encode categorical target to numeric BEFORE discarding non-numeric columns
+    # PREPROCESSING: Encode categorical target to numeric BEFORE dropping rows
     # This converts text labels to numbers, making the target "numeric"
-    if target_column in df.columns and df[target_column].dtype == 'object':
-        print(f"\nEncoding categorical target '{target_column}' to numeric...")
-        le = LabelEncoder()
-        df[target_column] = le.fit_transform(df[target_column])
-        print(f"  Classes: {list(le.classes_)}")
-        print(f"  Encoded as: {dict(zip(le.classes_, range(len(le.classes_))))}")
+    if target_column in df.columns:
+        # Handle boolean columns
+        if df[target_column].dtype == 'bool':
+            print(f"\nConverting boolean target '{target_column}' to numeric...")
+            df[target_column] = df[target_column].astype(int)
+            print(f"  False -> 0, True -> 1")
+        # Handle string/object columns
+        elif df[target_column].dtype == 'object':
+            print(f"\nEncoding categorical target '{target_column}' to numeric...")
+            le = LabelEncoder()
+            df[target_column] = le.fit_transform(df[target_column])
+            print(f"  Classes: {list(le.classes_)}")
+            print(f"  Encoded as: {dict(zip(le.classes_, range(len(le.classes_))))}")
     
     # Keep only numeric columns (now includes the encoded target)
     numeric_cols = df.select_dtypes(include=[np.number]).columns
     df = df[numeric_cols]
     
+    # Dataset-specific cleaning strategy
+    if dataset_name == 'Combined_Flights_2022':
+        # For flights dataset: drop columns with ANY missing to preserve Cancelled=1 rows
+        print(f"\n[Flights Dataset] Dropping columns with missing values...")
+        print(f"Columns before: {df.shape[1]}")
+        df = df.dropna(axis=1, how='any')
+        print(f"Columns after: {df.shape[1]}")
+    else:
+        # For other datasets: follow baseline requirements (drop rows with missing)
+        print(f"\n[Baseline] Dropping all records with missing values...")
+        df = df.dropna(axis=0, how='any')
+    
     print(f"\nFinal cleaned shape: {df.shape}")
     print(f"Features: {[col for col in df.columns if col != target_column]}")
     print(f"Target: {target_column}")
+    
+    # Check target distribution
+    if target_column in df.columns:
+        print(f"\nTarget distribution:")
+        print(df[target_column].value_counts().sort_index())
+        n_classes = df[target_column].nunique()
+        print(f"Number of classes: {n_classes}")
+        
+        if n_classes < 2:
+            raise ValueError(
+                f"ERROR: Target '{target_column}' has only {n_classes} class after cleaning!\n"
+                f"This usually means one class was completely removed when dropping missing values.\n"
+                f"Try a different target column or modify the cleaning process."
+            )
     
     return df
 
@@ -133,11 +170,11 @@ def train_naive_bayes(X_train, X_test, y_train, y_test, output_dir):
     print("\n=== Training Naïve Bayes ===")
     
     param_grid = {
-        'var_smoothing': np.logspace(-10, -1, 20)
+        'var_smoothing': np.logspace(-10, -1, 10)  # Reduced from 20 to 10
     }
     
     grid_search = GridSearchCV(
-        GaussianNB(), param_grid, cv=5, scoring='accuracy', n_jobs=1, verbose=1
+        GaussianNB(), param_grid, cv=3, scoring='accuracy', n_jobs=1, verbose=1
     )
     grid_search.fit(X_train, y_train)
     
@@ -169,13 +206,13 @@ def train_logistic_regression(X_train, X_test, y_train, y_test, output_dir):
     print("\n=== Training Logistic Regression ===")
     
     param_grid = {
-        'C': np.logspace(-3, 3, 10),
-        'solver': ['lbfgs', 'liblinear'],
-        'max_iter': [1000]
+        'C': np.logspace(-2, 2, 5),  # Reduced from 10 to 5 values
+        'solver': ['lbfgs'],  # Use only lbfgs for speed
+        'max_iter': [500]  # Reduced from 1000
     }
     
     grid_search = GridSearchCV(
-        LogisticRegression(random_state=42), param_grid, cv=5, scoring='accuracy', n_jobs=1, verbose=1
+        LogisticRegression(random_state=42), param_grid, cv=3, scoring='accuracy', n_jobs=1, verbose=1
     )
     grid_search.fit(X_train, y_train)
     
@@ -210,13 +247,13 @@ def train_knn(X_train, X_test, y_train, y_test, output_dir):
     print("\n=== Training KNN ===")
     
     param_grid = {
-        'n_neighbors': range(1, 21, 2),
-        'weights': ['uniform', 'distance'],
-        'metric': ['euclidean', 'manhattan']
+        'n_neighbors': [3, 7],  # 2 k values for graph
+        'weights': ['uniform', 'distance'],  # Both weighting schemes
+        'metric': ['euclidean']  # Just euclidean
     }
     
     grid_search = GridSearchCV(
-        KNeighborsClassifier(), param_grid, cv=5, scoring='accuracy', n_jobs=1, verbose=1
+        KNeighborsClassifier(), param_grid, cv=3, scoring='accuracy', n_jobs=1, verbose=1
     )
     grid_search.fit(X_train, y_train)
     
@@ -228,13 +265,12 @@ def train_knn(X_train, X_test, y_train, y_test, output_dir):
     fig, ax = plt.subplots(1, 2, figsize=(14, 5))
     
     for weight in ['uniform', 'distance']:
-        for metric in ['euclidean', 'manhattan']:
-            mask = (results['param_weights'] == weight) & (results['param_metric'] == metric)
-            ax[0 if weight == 'uniform' else 1].plot(
-                results[mask]['param_n_neighbors'], 
-                results[mask]['mean_test_score'],
-                marker='o', label=metric
-            )
+        mask = results['param_weights'] == weight
+        ax[0 if weight == 'uniform' else 1].plot(
+            results[mask]['param_n_neighbors'], 
+            results[mask]['mean_test_score'],
+            marker='o', label='euclidean'
+        )
         ax[0 if weight == 'uniform' else 1].set_xlabel('Number of Neighbors')
         ax[0 if weight == 'uniform' else 1].set_ylabel('Cross-Validation Accuracy')
         ax[0 if weight == 'uniform' else 1].set_title(f'KNN: {weight} weights')
@@ -257,14 +293,14 @@ def train_decision_tree(X_train, X_test, y_train, y_test, output_dir):
     print("\n=== Training Decision Tree ===")
     
     param_grid = {
-        'max_depth': [3, 5, 7, 10, 15, None],
-        'min_samples_split': [2, 5, 10, 20],
-        'min_samples_leaf': [1, 2, 4, 8],
-        'criterion': ['gini', 'entropy']
+        'max_depth': [5, 10, 15],  # Reduced options
+        'min_samples_split': [2, 10],  # Reduced from 4 to 2 options
+        'min_samples_leaf': [1, 4],  # Reduced from 4 to 2 options
+        'criterion': ['gini']  # Use only gini for speed
     }
     
     grid_search = GridSearchCV(
-        DecisionTreeClassifier(random_state=42), param_grid, cv=5, scoring='accuracy', n_jobs=1, verbose=1
+        DecisionTreeClassifier(random_state=42), param_grid, cv=3, scoring='accuracy', n_jobs=1, verbose=1
     )
     grid_search.fit(X_train, y_train)
     
@@ -310,16 +346,16 @@ def train_mlp(X_train, X_test, y_train, y_test, output_dir):
     print("\n=== Training Multi-layer Perceptron ===")
     
     param_grid = {
-        'hidden_layer_sizes': [(50,), (100,), (50, 50), (100, 50)],
-        'activation': ['relu', 'tanh'],
-        'alpha': [0.0001, 0.001, 0.01],
-        'learning_rate': ['constant', 'adaptive'],
-        'max_iter': [1000]
+        'hidden_layer_sizes': [(50,), (100,)],  # Reduced from 4 to 2 options
+        'activation': ['relu'],  # Use only relu
+        'alpha': [0.0001, 0.001],  # Reduced from 3 to 2 values
+        'learning_rate': ['adaptive'],  # Use only adaptive
+        'max_iter': [500]  # Reduced from 1000
     }
     
     grid_search = GridSearchCV(
         MLPClassifier(random_state=42, early_stopping=True), 
-        param_grid, cv=5, scoring='accuracy', n_jobs=1, verbose=1
+        param_grid, cv=3, scoring='accuracy', n_jobs=1, verbose=1
     )
     grid_search.fit(X_train, y_train)
     
@@ -392,7 +428,7 @@ def get_dataset_config(dataset_choice):
         '1': {
             'path': '../../classification/traffic_accidents.csv',
             'name': 'traffic_accidents',
-            'target': 'most_severe_injury'
+            'target': 'crash_type'  # Predict type of crash
         },
         '2': {
             'path': '../../classification/Combined_Flights_2022.csv',
@@ -451,12 +487,11 @@ def main():
     print(f"{'='*80}\n")
     
     # Load and clean data
-    df = load_and_clean_data(dataset_path, target_column)
+    df = load_and_clean_data(dataset_path, target_column, dataset_name)
     
     # Auto-detect target if not specified
     if target_column is None or target_column not in df.columns:
-        target_column = auto_detect_target(df)
-        print(f"\nAuto-detected target column: {target_column}")
+        print(f"\nTarget column not in the dataframe: {target_column}")
     
     # Prepare data
     X_train, X_test, y_train, y_test, scaler = prepare_data(df, target_column)
