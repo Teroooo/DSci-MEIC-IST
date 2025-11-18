@@ -59,7 +59,7 @@
     %\setlength\extrarowheight{7pt}
     \begin{tabular}{ |l|l l|l| }
         \hline
-        \multirow{4}{6em}{\textbf{Team nr: } Insert here} & \textbf{Student 1: } Antero Morgado & \textbf{IST nr: } 1119213\\
+        \multirow{4}{6em}{\textbf{Team nr: } 16} & \textbf{Student 1: } Antero Morgado & \textbf{IST nr: } 1119213\\
         & \textbf{Student 2: } David Ferreira & \textbf{IST nr:} 1107077 \\
         & \textbf{Student 3: } José Fernandes & \textbf{IST nr: } 1103727 \\
         & \textbf{Student 4: } Olha Buts & \textbf{IST nr: } 1116276 \\
@@ -98,7 +98,7 @@
 \hline
 Naïve Bayes & 0.823 & 0.863 & 0.823 & 0.813 \\
 Logistic Regression & 0.821 & 0.864 & 0.821 & 0.811 \\
-KNN & 0.811 & 0.822 & 0.811 & 0.806 \\
+KNN & 0.826 & 0.822 & 0.811 & 0.806 \\
 Decision Tree & 0.829 & 0.859 & 0.829 & 0.821 \\
 Multi-layer Perceptron & 0.829 & 0.859 & 0.829 & 0.821 \\
 \hline
@@ -131,15 +131,13 @@ Multi-layer Perceptron & 0.970 & 0.970 & 0.970 & 0.956 \\
 \hline
 \textbf{Model} & \textbf{Best Hyperparameters} \\
 \hline
-Naïve Bayes & var\_smoothing: 0.001 \\
+Logistic Regression & penalty: l1, solver: liblinear, max\_iter: 500 \\
 \hline
-Logistic Regression & C: 0.01, solver: lbfgs, max\_iter: 500 \\
+KNN & n\_neighbors: 10, metric: euclidean \\
 \hline
-KNN & n\_neighbors: 7, weights: uniform, metric: euclidean \\
+Decision Tree & criterion: entropy, max\_depth: 6 \\
 \hline
-Decision Tree & criterion: gini, max\_depth: 5, min\_samples\_split: 10, min\_samples\_leaf: 1 \\
-\hline
-Multi-layer Perceptron & hidden\_layer\_sizes: (50,), activation: relu, alpha: 0.0001, learning\_rate: adaptive \\
+Multi-layer Perceptron & learning\_rate\_ini: 0.5, max\_iter: 500, activation: logistic, solver: sgd, learning\_rate: adaptive \\
 \hline
 \end{tabular}
 \end{table}
@@ -152,36 +150,19 @@ Multi-layer Perceptron & hidden\_layer\_sizes: (50,), activation: relu, alpha: 0
 \hline
 \textbf{Model} & \textbf{Best Hyperparameters} \\
 \hline
-Naïve Bayes & var\_smoothing: 1e-10 \\
+Logistic Regression & penalty: l1, solver: liblinear, max\_iter: 500 \\
 \hline
-Logistic Regression & C: 0.01, solver: lbfgs, max\_iter: 500 \\
+KNN & n\_neighbors: 15, metric: manhattan \\
 \hline
-KNN & n\_neighbors: 7, weights: uniform, metric: euclidean \\
+Decision Tree & criterion: gini, max\_depth: 8 \\
 \hline
-Decision Tree & criterion: gini, max\_depth: 10, min\_samples\_split: 2, min\_samples\_leaf: 4 \\
-\hline
-Multi-layer Perceptron & hidden\_layer\_sizes: (100,), activation: relu, alpha: 0.0001, learning\_rate: adaptive \\
+Multi-layer Perceptron & learning\_rate\_ini: 0.5, max\_iter: 500, activation: logistic, solver: sgd, learning\_rate: adaptive \\
 \hline
 \end{tabular}
 \end{table}
 
 \subsection{Naïve Bayes}
 
-\begin{figure}[H]
-\centering
-\begin{subfigure}{0.49\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{traffic_accidents/nb_hyperparameter_study.png}
-    \caption{Traffic Accidents - Hyperparameter Study}
-\end{subfigure}
-\hfill
-\begin{subfigure}{0.49\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{Combined_Flights_2022/nb_hyperparameter_study.png}
-    \caption{Combined Flights - Hyperparameter Study}
-\end{subfigure}
-\caption{Naïve Bayes: Hyperparameter Tuning Results}
-\end{figure}
 
 \begin{figure}[H]
 \centering
@@ -335,22 +316,5 @@ Multi-layer Perceptron & hidden\_layer\_sizes: (100,), activation: relu, alpha: 
 \caption{Multi-layer Perceptron: Model Performance}
 \end{figure}
 
-\subsection{Overall Model Comparison}
-
-\begin{figure}[H]
-\centering
-\begin{subfigure}{0.49\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{traffic_accidents/model_performance_comparison.png}
-    \caption{Traffic Accidents Dataset}
-\end{subfigure}
-\hfill
-\begin{subfigure}{0.49\textwidth}
-    \centering
-    \includegraphics[width=\textwidth]{Combined_Flights_2022/model_performance_comparison.png}
-    \caption{Combined Flights 2022 Dataset}
-\end{subfigure}
-\caption{Overall Performance Comparison Across All Models}
-\end{figure}
 
 \end{document}

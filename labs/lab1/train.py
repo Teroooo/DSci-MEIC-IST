@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.preprocessing import StandardScaler, LabelEncoder
-from sklearn.naive_bayes import GaussianNB
+from sklearn.naive_bayes import GaussianNB, MultinomialNB, BernoulliNB
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
@@ -166,69 +166,110 @@ def plot_model_performance(y_test, y_pred, model_name, output_dir):
     plt.close()
 
 def train_naive_bayes(X_train, X_test, y_train, y_test, output_dir):
-    """Train Naïve Bayes with hyperparameter tuning"""
+    """Train Naïve Bayes - comparing 3 variants, NO cross-validation"""
     print("\n=== Training Naïve Bayes ===")
     
-    param_grid = {
-        'var_smoothing': np.logspace(-10, -1, 10)  # Reduced from 20 to 10
+    estimators = {
+        'GaussianNB': GaussianNB()
     }
     
-    grid_search = GridSearchCV(
-        GaussianNB(), param_grid, cv=3, scoring='accuracy', n_jobs=1, verbose=1
-    )
-    grid_search.fit(X_train, y_train)
+    best_model = None
+    best_params = {}
+    best_score = 0.0
+    results = {'variant': [], 'test_accuracy': []}
     
-    best_model = grid_search.best_estimator_
-    print(f"Best parameters: {grid_search.best_params_}")
+    for name, model in estimators.items():
+        model.fit(X_train, y_train)
+        y_pred = model.predict(X_test)
+        test_acc = accuracy_score(y_test, y_pred)
+        
+        results['variant'].append(name)
+        results['test_accuracy'].append(test_acc)
+        
+        if test_acc > best_score:
+            best_score = test_acc
+            best_model = model
+            best_params = {'variant': name}
+        
+        print(f"  {name}: accuracy={test_acc:.4f}")
+    
+    print(f"\nBest variant: {best_params}")
+    print(f"Best test accuracy: {best_score:.4f}")
     
     # Plot hyperparameter study
-    results = pd.DataFrame(grid_search.cv_results_)
+    results_df = pd.DataFrame(results)
     plt.figure(figsize=(10, 6))
-    plt.plot(results['param_var_smoothing'], results['mean_test_score'], 'b-o')
-    plt.xscale('log')
-    plt.xlabel('var_smoothing')
-    plt.ylabel('Cross-Validation Accuracy')
-    plt.title('Naïve Bayes: Hyperparameter Study')
-    plt.grid(True)
+    plt.bar(results_df['variant'], results_df['test_accuracy'], color='steelblue')
+    plt.xlabel('Naïve Bayes Variant')
+    plt.ylabel('Test Set Accuracy')
+    plt.title('Naïve Bayes: Variant Comparison (Test Set Evaluation)')
+    plt.ylim([0, 1.1])
+    plt.grid(True, axis='y', alpha=0.3)
+    
+    # Add value labels on bars
+    for i, v in enumerate(results_df['test_accuracy']):
+        plt.text(i, v + 0.02, f'{v:.4f}', ha='center', va='bottom')
+    
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, 'nb_hyperparameter_study.png'), dpi=300, bbox_inches='tight')
     plt.close()
     
     metrics, y_pred = evaluate_model(best_model, X_test, y_test, 'Naïve Bayes')
-    
-    # Plot performance
     plot_model_performance(y_test, y_pred, 'Naïve Bayes', output_dir)
     
-    return best_model, metrics, grid_search.best_params_
+    return best_model, metrics, best_params
+
 
 def train_logistic_regression(X_train, X_test, y_train, y_test, output_dir):
-    """Train Logistic Regression with hyperparameter tuning"""
+    """Train Logistic Regression - NO cross-validation"""
     print("\n=== Training Logistic Regression ===")
     
-    param_grid = {
-        'C': np.logspace(-2, 2, 5),  # Reduced from 10 to 5 values
-        'solver': ['lbfgs'],  # Use only lbfgs for speed
-        'max_iter': [500]  # Reduced from 1000
-    }
+    nr_iterations = [500, 1000, 1500, 2000, 2500]
+    penalty_types = ['l1', 'l2']
     
-    grid_search = GridSearchCV(
-        LogisticRegression(random_state=42), param_grid, cv=3, scoring='accuracy', n_jobs=1, verbose=1
-    )
-    grid_search.fit(X_train, y_train)
+    best_model = None
+    best_params = {}
+    best_score = 0.0
+    results = {'iterations': [], 'penalty': [], 'test_accuracy': []}
     
-    best_model = grid_search.best_estimator_
-    print(f"Best parameters: {grid_search.best_params_}")
+    for penalty in penalty_types:
+        for max_iter in nr_iterations:
+            model = LogisticRegression(
+                penalty=penalty,
+                max_iter=max_iter,
+                solver='liblinear',
+                random_state=42
+            )
+            model.fit(X_train, y_train)
+            y_pred = model.predict(X_test)
+            test_acc = accuracy_score(y_test, y_pred)
+            
+            results['iterations'].append(max_iter)
+            results['penalty'].append(penalty)
+            results['test_accuracy'].append(test_acc)
+            
+            if test_acc > best_score:
+                best_score = test_acc
+                best_model = model
+                best_params = {'penalty': penalty, 'max_iter': max_iter, 'solver': 'liblinear'}
+            
+            print(f"  penalty={penalty}, max_iter={max_iter}: accuracy={test_acc:.4f}")
+    
+    print(f"\nBest parameters: {best_params}")
+    print(f"Best test accuracy: {best_score:.4f}")
     
     # Plot hyperparameter study
-    results = pd.DataFrame(grid_search.cv_results_)
-    for solver in ['lbfgs', 'liblinear']:
-        mask = results['param_solver'] == solver
-        plt.plot(results[mask]['param_C'], results[mask]['mean_test_score'], 
-                 marker='o', label=solver)
-    plt.xscale('log')
-    plt.xlabel('C (Regularization)')
-    plt.ylabel('Cross-Validation Accuracy')
-    plt.title('Logistic Regression: Hyperparameter Study')
+    results_df = pd.DataFrame(results)
+    plt.figure(figsize=(10, 6))
+    
+    for penalty in penalty_types:
+        mask = results_df['penalty'] == penalty
+        data = results_df[mask]
+        plt.plot(data['iterations'], data['test_accuracy'], marker='o', label=penalty)
+    
+    plt.xlabel('Number of Iterations')
+    plt.ylabel('Test Set Accuracy')
+    plt.title('Logistic Regression: Hyperparameter Study (Test Set Evaluation)')
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
@@ -236,168 +277,209 @@ def train_logistic_regression(X_train, X_test, y_train, y_test, output_dir):
     plt.close()
     
     metrics, y_pred = evaluate_model(best_model, X_test, y_test, 'Logistic Regression')
-    
-    # Plot performance
     plot_model_performance(y_test, y_pred, 'Logistic Regression', output_dir)
     
-    return best_model, metrics, grid_search.best_params_
+    return best_model, metrics, best_params
+
 
 def train_knn(X_train, X_test, y_train, y_test, output_dir):
     """Train KNN with hyperparameter tuning"""
     print("\n=== Training KNN ===")
     
-    param_grid = {
-        'n_neighbors': [3, 7],  # 2 k values for graph
-        'weights': ['uniform', 'distance'],  # Both weighting schemes
-        'metric': ['euclidean']  # Just euclidean
-    }
+    k_values = [3, 5, 7, 9, 11, 13, 15, 17, 19]
+    distances = ['manhattan', 'euclidean', 'chebyshev']
     
-    grid_search = GridSearchCV(
-        KNeighborsClassifier(), param_grid, cv=3, scoring='accuracy', n_jobs=1, verbose=1
-    )
-    grid_search.fit(X_train, y_train)
+    best_model = None
+    best_params = {}
+    best_score = 0.0
+    results = {'k': [], 'metric': [], 'test_accuracy': []}
     
-    best_model = grid_search.best_estimator_
-    print(f"Best parameters: {grid_search.best_params_}")
+    # Try all combinations
+    for k in k_values:
+        for dist in distances:
+            model = KNeighborsClassifier(n_neighbors=k, metric=dist)
+            model.fit(X_train, y_train)
+            y_pred = model.predict(X_test)
+            test_acc = accuracy_score(y_test, y_pred)
+            
+            results['k'].append(k)
+            results['metric'].append(dist)
+            results['test_accuracy'].append(test_acc)
+            
+            if test_acc > best_score:
+                best_score = test_acc
+                best_model = model
+                best_params = {'n_neighbors': k, 'metric': dist}
+            
+            print(f"  k={k}, metric={dist}: accuracy={test_acc:.4f}")
     
-    # Plot hyperparameter study
-    results = pd.DataFrame(grid_search.cv_results_)
-    fig, ax = plt.subplots(1, 2, figsize=(14, 5))
+    print(f"\nBest parameters: {best_params}")
+    print(f"Best test accuracy: {best_score:.4f}")
     
-    for weight in ['uniform', 'distance']:
-        mask = results['param_weights'] == weight
-        ax[0 if weight == 'uniform' else 1].plot(
-            results[mask]['param_n_neighbors'], 
-            results[mask]['mean_test_score'],
-            marker='o', label='euclidean'
-        )
-        ax[0 if weight == 'uniform' else 1].set_xlabel('Number of Neighbors')
-        ax[0 if weight == 'uniform' else 1].set_ylabel('Cross-Validation Accuracy')
-        ax[0 if weight == 'uniform' else 1].set_title(f'KNN: {weight} weights')
-        ax[0 if weight == 'uniform' else 1].legend()
-        ax[0 if weight == 'uniform' else 1].grid(True)
+    # Plot hyperparameter study - one line per distance metric
+    results_df = pd.DataFrame(results)
+    plt.figure(figsize=(10, 6))
     
+    for dist in distances:
+        mask = results_df['metric'] == dist
+        data = results_df[mask]
+        plt.plot(data['k'], data['test_accuracy'], marker='o', label=dist)
+    
+    plt.xlabel('Number of Neighbors (k)')
+    plt.ylabel('Test Set Accuracy')
+    plt.title('KNN: Hyperparameter Study (Test Set Evaluation)')
+    plt.legend()
+    plt.grid(True)
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, 'knn_hyperparameter_study.png'), dpi=300, bbox_inches='tight')
     plt.close()
     
+    # Evaluate best model
     metrics, y_pred = evaluate_model(best_model, X_test, y_test, 'KNN')
-    
-    # Plot performance
     plot_model_performance(y_test, y_pred, 'KNN', output_dir)
     
-    return best_model, metrics, grid_search.best_params_
+    return best_model, metrics, best_params
 
 def train_decision_tree(X_train, X_test, y_train, y_test, output_dir):
-    """Train Decision Tree with hyperparameter tuning"""
+    """Train Decision Tree - NO cross-validation, more depth levels"""
     print("\n=== Training Decision Tree ===")
     
-    param_grid = {
-        'max_depth': [5, 10, 15],  # Reduced options
-        'min_samples_split': [2, 10],  # Reduced from 4 to 2 options
-        'min_samples_leaf': [1, 4],  # Reduced from 4 to 2 options
-        'criterion': ['gini']  # Use only gini for speed
-    }
+    depths = [2, 4, 6, 8, 10, 12, 15, 20, 25, 30]  # Mais níveis!
+    criterions = ['entropy', 'gini']
     
-    grid_search = GridSearchCV(
-        DecisionTreeClassifier(random_state=42), param_grid, cv=3, scoring='accuracy', n_jobs=1, verbose=1
-    )
-    grid_search.fit(X_train, y_train)
+    best_model = None
+    best_params = {}
+    best_score = 0.0
+    results = {'depth': [], 'criterion': [], 'test_accuracy': []}
     
-    best_model = grid_search.best_estimator_
-    print(f"Best parameters: {grid_search.best_params_}")
+    for criterion in criterions:
+        for depth in depths:
+            model = DecisionTreeClassifier(
+                max_depth=depth,
+                criterion=criterion,
+                min_impurity_decrease=0,
+                random_state=42
+            )
+            model.fit(X_train, y_train)
+            y_pred = model.predict(X_test)
+            test_acc = accuracy_score(y_test, y_pred)
+            
+            results['depth'].append(depth)
+            results['criterion'].append(criterion)
+            results['test_accuracy'].append(test_acc)
+            
+            if test_acc > best_score:
+                best_score = test_acc
+                best_model = model
+                best_params = {'criterion': criterion, 'max_depth': depth}
+            
+            print(f"  criterion={criterion}, max_depth={depth}: accuracy={test_acc:.4f}")
+    
+    print(f"\nBest parameters: {best_params}")
+    print(f"Best test accuracy: {best_score:.4f}")
     
     # Plot hyperparameter study
-    results = pd.DataFrame(grid_search.cv_results_)
-    fig, ax = plt.subplots(1, 2, figsize=(14, 5))
+    results_df = pd.DataFrame(results)
+    plt.figure(figsize=(10, 6))
     
-    for criterion in ['gini', 'entropy']:
-        mask = results['param_criterion'] == criterion
-        depth_scores = results[mask].groupby('param_max_depth')['mean_test_score'].mean()
-        ax[0].plot(range(len(depth_scores)), depth_scores.values, marker='o', label=criterion)
+    for criterion in criterions:
+        mask = results_df['criterion'] == criterion
+        data = results_df[mask]
+        plt.plot(data['depth'], data['test_accuracy'], marker='o', label=criterion)
     
-    ax[0].set_xlabel('Max Depth')
-    ax[0].set_xticklabels([str(d) for d in depth_scores.index])
-    ax[0].set_ylabel('Cross-Validation Accuracy')
-    ax[0].set_title('Decision Tree: Max Depth vs Accuracy')
-    ax[0].legend()
-    ax[0].grid(True)
-    
-    split_scores = results.groupby('param_min_samples_split')['mean_test_score'].mean()
-    ax[1].plot(split_scores.index, split_scores.values, marker='o', color='green')
-    ax[1].set_xlabel('Min Samples Split')
-    ax[1].set_ylabel('Cross-Validation Accuracy')
-    ax[1].set_title('Decision Tree: Min Samples Split vs Accuracy')
-    ax[1].grid(True)
-    
+    plt.xlabel('Max Depth')
+    plt.ylabel('Test Set Accuracy')
+    plt.title('Decision Tree: Hyperparameter Study (Test Set Evaluation)')
+    plt.legend()
+    plt.grid(True)
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, 'dt_hyperparameter_study.png'), dpi=300, bbox_inches='tight')
     plt.close()
     
     metrics, y_pred = evaluate_model(best_model, X_test, y_test, 'Decision Tree')
-    
-    # Plot performance
     plot_model_performance(y_test, y_pred, 'Decision Tree', output_dir)
     
-    return best_model, metrics, grid_search.best_params_
+    return best_model, metrics, best_params
+
+
 
 def train_mlp(X_train, X_test, y_train, y_test, output_dir):
-    """Train Multi-layer Perceptron with hyperparameter tuning"""
+    """Train MLP - NO cross-validation"""
     print("\n=== Training Multi-layer Perceptron ===")
     
-    param_grid = {
-        'hidden_layer_sizes': [(50,), (100,)],  # Reduced from 4 to 2 options
-        'activation': ['relu'],  # Use only relu
-        'alpha': [0.0001, 0.001],  # Reduced from 3 to 2 values
-        'learning_rate': ['adaptive'],  # Use only adaptive
-        'max_iter': [500]  # Reduced from 1000
-    }
+    nr_iterations = [500, 1000, 1500, 2000, 2500]
+    lr_types = ['constant', 'invscaling', 'adaptive']
+    learning_rates = [0.5, 0.05, 0.005, 0.0005]
     
-    grid_search = GridSearchCV(
-        MLPClassifier(random_state=42, early_stopping=True), 
-        param_grid, cv=3, scoring='accuracy', n_jobs=1, verbose=1
-    )
-    grid_search.fit(X_train, y_train)
+    best_model = None
+    best_params = {}
+    best_score = 0.0
+    results = {'iterations': [], 'lr_type': [], 'lr': [], 'test_accuracy': []}
     
-    best_model = grid_search.best_estimator_
-    print(f"Best parameters: {grid_search.best_params_}")
+    for lr_type in lr_types:
+        for lr in learning_rates:
+            for max_iter in nr_iterations:
+                model = MLPClassifier(
+                    learning_rate=lr_type,
+                    learning_rate_init=lr,
+                    max_iter=max_iter,
+                    activation='logistic',
+                    solver='sgd',
+                    random_state=42
+                )
+                model.fit(X_train, y_train)
+                y_pred = model.predict(X_test)
+                test_acc = accuracy_score(y_test, y_pred)
+                
+                results['iterations'].append(max_iter)
+                results['lr_type'].append(lr_type)
+                results['lr'].append(lr)
+                results['test_accuracy'].append(test_acc)
+                
+                if test_acc > best_score:
+                    best_score = test_acc
+                    best_model = model
+                    best_params = {
+                        'learning_rate': lr_type,
+                        'learning_rate_init': lr,
+                        'max_iter': max_iter,
+                        'activation': 'logistic',
+                        'solver': 'sgd'
+                    }
+                
+                print(f"  lr_type={lr_type}, lr={lr}, max_iter={max_iter}: accuracy={test_acc:.4f}")
     
-    # Plot hyperparameter study
-    results = pd.DataFrame(grid_search.cv_results_)
-    fig, ax = plt.subplots(1, 2, figsize=(14, 5))
+    print(f"\nBest parameters: {best_params}")
+    print(f"Best test accuracy: {best_score:.4f}")
     
-    # Hidden layer sizes
-    layer_scores = results.groupby('param_hidden_layer_sizes')['mean_test_score'].mean().sort_values(ascending=False)
-    ax[0].barh(range(len(layer_scores)), layer_scores.values)
-    ax[0].set_yticks(range(len(layer_scores)))
-    ax[0].set_yticklabels([str(l) for l in layer_scores.index])
-    ax[0].set_xlabel('Cross-Validation Accuracy')
-    ax[0].set_title('MLP: Hidden Layer Sizes')
-    ax[0].grid(True, axis='x')
+    # Plot hyperparameter study - 3 subplots (one per lr_type)
+    results_df = pd.DataFrame(results)
+    fig, axes = plt.subplots(1, 3, figsize=(18, 5))
     
-    # Alpha (regularization)
-    for activation in ['relu', 'tanh']:
-        mask = results['param_activation'] == activation
-        alpha_scores = results[mask].groupby('param_alpha')['mean_test_score'].mean()
-        ax[1].plot(alpha_scores.index, alpha_scores.values, marker='o', label=activation)
-    
-    ax[1].set_xscale('log')
-    ax[1].set_xlabel('Alpha (Regularization)')
-    ax[1].set_ylabel('Cross-Validation Accuracy')
-    ax[1].set_title('MLP: Alpha vs Accuracy')
-    ax[1].legend()
-    ax[1].grid(True)
+    for idx, lr_type in enumerate(lr_types):
+        ax = axes[idx]
+        mask = results_df['lr_type'] == lr_type
+        
+        for lr in learning_rates:
+            lr_mask = mask & (results_df['lr'] == lr)
+            data = results_df[lr_mask]
+            ax.plot(data['iterations'], data['test_accuracy'], marker='o', label=f'lr={lr}')
+        
+        ax.set_xlabel('Number of Iterations')
+        ax.set_ylabel('Test Set Accuracy')
+        ax.set_title(f'MLP: {lr_type} learning rate')
+        ax.legend()
+        ax.grid(True)
     
     plt.tight_layout()
     plt.savefig(os.path.join(output_dir, 'mlp_hyperparameter_study.png'), dpi=300, bbox_inches='tight')
     plt.close()
     
     metrics, y_pred = evaluate_model(best_model, X_test, y_test, 'Multi-layer Perceptron')
-    
-    # Plot performance
     plot_model_performance(y_test, y_pred, 'Multi-layer Perceptron', output_dir)
     
-    return best_model, metrics, grid_search.best_params_
+    return best_model, metrics, best_params
+
 
 def plot_performance_comparison(results_df, output_dir):
     """Plot performance comparison across all models"""
@@ -504,14 +586,14 @@ def main():
     best_params = {}
     
     # Naïve Bayes
-    model, metrics, params = train_naive_bayes(X_train, X_test, y_train, y_test, output_dir)
-    results.append(metrics)
-    best_params['Naïve Bayes'] = params
+    #model, metrics, params = train_naive_bayes(X_train, X_test, y_train, y_test, output_dir)
+    #results.append(metrics)
+    #best_params['Naïve Bayes'] = params
     
     # Logistic Regression
-    model, metrics, params = train_logistic_regression(X_train, X_test, y_train, y_test, output_dir)
-    results.append(metrics)
-    best_params['Logistic Regression'] = params
+    #model, metrics, params = train_logistic_regression(X_train, X_test, y_train, y_test, output_dir)
+    #results.append(metrics)
+    #best_params['Logistic Regression'] = params
     
     # KNN
     model, metrics, params = train_knn(X_train, X_test, y_train, y_test, output_dir)
@@ -519,14 +601,14 @@ def main():
     best_params['KNN'] = params
     
     # Decision Tree
-    model, metrics, params = train_decision_tree(X_train, X_test, y_train, y_test, output_dir)
-    results.append(metrics)
-    best_params['Decision Tree'] = params
+    #model, metrics, params = train_decision_tree(X_train, X_test, y_train, y_test, output_dir)
+    #results.append(metrics)
+    #best_params['Decision Tree'] = params
     
     # MLP
-    model, metrics, params = train_mlp(X_train, X_test, y_train, y_test, output_dir)
-    results.append(metrics)
-    best_params['Multi-layer Perceptron'] = params
+    #model, metrics, params = train_mlp(X_train, X_test, y_train, y_test, output_dir)
+    #results.append(metrics)
+    #best_params['Multi-layer Perceptron'] = params
     
     # Create results DataFrame
     results_df = pd.DataFrame(results)
