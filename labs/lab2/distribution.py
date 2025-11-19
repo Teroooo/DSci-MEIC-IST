@@ -15,17 +15,17 @@ run_credit_score_global_boxplot: bool = False
 run_credit_score_single_boxplots: bool = False
 run_credit_score_outliers: bool = False
 run_credit_score_histograms: bool = False
-run_credit_score_histograms_with_distributions: bool = True
-run_credit_score_histograms_symbolic: bool = False # check X-axis text
+run_credit_score_histograms_with_distributions: bool = False
+run_credit_score_histograms_symbolic: bool = True # check X-axis text
 run_credit_score_class_distribution: bool = False
 run_sampling = False
 sampling_amount = 0.01
 
-# filename = "../../classification/traffic_accidents.csv"
-# savefig_path_prefix = "images/distribution/traffic_accidents/traffic_accidents"
+filename = "../../classification/traffic_accidents.csv"
+savefig_path_prefix = "images/distribution/traffic_accidents/traffic_accidents"
 
-filename = "../../classification/Combined_Flights_2022.csv"
-savefig_path_prefix = "images/distribution/Combined_Flights_2022/Combined_Flights_2022"
+# filename = "../../classification/Combined_Flights_2022.csv"
+# savefig_path_prefix = "images/distribution/Combined_Flights_2022/Combined_Flights_2022"
 
 # Create output directory if it doesn't exist
 os.makedirs(os.path.dirname(savefig_path_prefix), exist_ok=True)
@@ -79,7 +79,7 @@ if credit_score_numeric and run_credit_score_single_boxplots:
     )
     i, j = 0, 0
     for n in range(len(credit_score_numeric)):
-        axs[i, j].set_yscale('symlog')
+        axs[i, j].set_yscale('linear')
         axs[i, j].set_title("Boxplot for %s" % credit_score_numeric[n])
         axs[i, j].boxplot(credit_score_data[credit_score_numeric[n]].dropna().values)
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
@@ -150,9 +150,9 @@ if credit_score_numeric and run_credit_score_histograms:
             ylabel="nr records",
         )
         if credit_score_numeric[n] == "MonthlyBalance":
-            axs[i, j].hist(data, bins=1000)
+            axs[i, j].hist(data, bins=1000, log=True)
         else:
-            axs[i, j].hist(data, "auto")
+            axs[i, j].hist(data, "auto", log=True)
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
     plt.tight_layout()
     plt.savefig(f"{savefig_path_prefix}_single_histograms_numeric.png")
