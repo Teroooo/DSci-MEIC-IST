@@ -145,6 +145,11 @@ Results are saved to `labs/lab1/results/[dataset_name]/`:
 8. **Evaluate** on test set
 9. **Generate charts and reports**
 
+## Lab 2: How to run
+
+1. cd ~/DSci-MEIC-IST
+2. python3 dimensionality.py
+
 ## Requirements
 
 - Python 3.8+

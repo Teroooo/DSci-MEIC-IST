@@ -1,12 +1,19 @@
 from matplotlib.pyplot import rcParams, style
 from matplotlib.colors import LinearSegmentedColormap
+from pathlib import Path
 from warnings import simplefilter
 from cycler import cycler
 
 # _________________________________________ STYLE ____________________________________________________
 simplefilter("ignore")
-style.use("dslabs.mplstyle")
+# get the path of the current file (config.py)
+config_dir = Path(__file__).parent
 
+# build the absolute path to dslabs.mplstyle in the same folder
+style_file = config_dir / "dslabs.mplstyle"
+
+# use it
+style.use(style_file)
 HATCHES = [".", "..", "...", "o"]  # ['/', '+', 'X', '*'] #'oo', 'OO', '..'
 
 my_palette = {

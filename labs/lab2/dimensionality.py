@@ -8,12 +8,11 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from utils.dslabs_functions import get_variable_types, plot_bar_chart
 
+# credit_score_filename: str = "../../classification/traffic_accidents.csv"
+# credit_score_savefig_path_prefix: str = "images/dimensionality/traffic_accidents/traffic_accidents"
 
-credit_score_filename: str = "../../classification/traffic_accidents.csv"
-credit_score_savefig_path_prefix: str = "images/dimensionality/traffic_accidents/traffic_accidents"
-
-# credit_score_filename: str = "../../classification/Combined_Flights_2022.csv"
-# credit_score_savefig_path_prefix: str = "images/dimensionality/Combined_Flights_2022/Combined_Flights_2022"
+credit_score_filename: str = "../../classification/Combined_Flights_2022.csv"
+credit_score_savefig_path_prefix: str = "images/dimensionality/Combined_Flights_2022/Combined_Flights_2022"
 
 credit_score_data: DataFrame = read_csv(credit_score_filename)
 
@@ -74,9 +73,13 @@ else:
 if run_credit_score_missing_values_analysis:
     credit_score_mv: dict[str, int] = {}
     for var in credit_score_data.columns:
-        nr: int = credit_score_data[var].isnull().sum()
-        if nr > 0:
-            credit_score_mv[var] = nr
+        s = credit_score_data[var]
+        nr_null = s.isnull().sum()
+        # count entries equal to "UNKNOWN" (case-insensitive, trimmed)
+        nr_unknown = s.astype(str).str.strip().str.upper().eq("UNKNOWN").sum()
+        total_missing = int(nr_null) + int(nr_unknown)
+        if total_missing > 0:
+            credit_score_mv[var] = total_missing
 
     plt.figure()
     plot_bar_chart(
