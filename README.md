@@ -1,3 +1,8 @@
+# Questões:
+
+1. Verificar se encoding faz sentido.
+2. Temos de fazer drop de entradas com um missing value?
+
 # DSci - Data Science Course
 
 Repository for Data Science course labs and projects.
@@ -147,8 +152,9 @@ Results are saved to `labs/lab1/results/[dataset_name]/`:
 
 ## Lab 2: How to run
 
-1. cd ~/DSci-MEIC-IST
+1. cd ~/DSci-MEIC-IST/labs/lab2
 2. python3 dimensionality.py
+3. python3 distribution.py
 
 ## Requirements
 

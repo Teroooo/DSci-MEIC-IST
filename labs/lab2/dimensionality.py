@@ -8,11 +8,11 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from utils.dslabs_functions import get_variable_types, plot_bar_chart
 
-# credit_score_filename: str = "../../classification/traffic_accidents.csv"
-# credit_score_savefig_path_prefix: str = "images/dimensionality/traffic_accidents/traffic_accidents"
+credit_score_filename: str = "../../classification/traffic_accidents.csv"
+credit_score_savefig_path_prefix: str = "images/dimensionality/traffic_accidents/traffic_accidents"
 
-credit_score_filename: str = "../../classification/Combined_Flights_2022.csv"
-credit_score_savefig_path_prefix: str = "images/dimensionality/Combined_Flights_2022/Combined_Flights_2022"
+# credit_score_filename: str = "../../classification/Combined_Flights_2022.csv"
+# credit_score_savefig_path_prefix: str = "images/dimensionality/Combined_Flights_2022/Combined_Flights_2022"
 
 credit_score_data: DataFrame = read_csv(credit_score_filename)
 

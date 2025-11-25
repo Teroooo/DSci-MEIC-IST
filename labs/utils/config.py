@@ -108,4 +108,4 @@ rcParams["boxplot.whiskerprops.color"] = LINE_COLOR
 rcParams["boxplot.meanprops.color"] = my_palette["purple"]
 rcParams["boxplot.meanprops.markeredgecolor"] = my_palette["purple"]
 rcParams["boxplot.meanprops.markerfacecolor"] = my_palette["purple"]
-rcParams["boxplot.medianprops.color"] = my_palette["green"]
+rcParams["boxplot.medianprops.color"] = my_palette["yellow"]
