@@ -96,8 +96,9 @@ def plot_stacked_bar(percentages: pd.DataFrame, feature: str, max_categories: in
 
     plt.figure(figsize=(max(8, len(categories) * 0.6), 6))
 
-    plt.bar(x, no_injury, label=TARGET_NO_INJURY)
-    plt.bar(x, injury, bottom=no_injury, label=TARGET_INJURY)
+    # Put INJURY at the bottom, NO INJURY stacked on top
+    plt.bar(x, injury, label=TARGET_INJURY)
+    plt.bar(x, no_injury, bottom=injury, label=TARGET_NO_INJURY)
 
     plt.xticks(x, categories, rotation=45, ha="right")
     plt.ylabel("Percentage of records (%)")
@@ -105,6 +106,18 @@ def plot_stacked_bar(percentages: pd.DataFrame, feature: str, max_categories: in
     plt.ylim(0, 100)
     plt.legend()
     plt.tight_layout()
+
+
+def print_injury_percentages(percentages: pd.DataFrame, feature: str):
+    """Print, for a given feature, an ordinal-style dict for INJURY share."""
+    print(f'"{feature}": {{')
+
+    # percentages index holds the classes; pct_injury is between 0 and 1
+    for cls, row in percentages.iterrows():
+        pct = row["pct_injury"] * 100
+        print(f'    "{cls}": {pct:.1f},')
+
+    print("},")
 
 
 def main():
@@ -117,6 +130,7 @@ def main():
 
     for feature in NOMINAL:
         percentages = compute_percentages(df, feature)
+        print_injury_percentages(percentages, feature)
         plot_stacked_bar(percentages, feature)
         plt.show()
 

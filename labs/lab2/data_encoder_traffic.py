@@ -30,15 +30,14 @@ NUMERIC_NO_CONVERSION = [
 ]
 CYCLICAL = ["crash_hour", "crash_day_of_week", "crash_month"]
 NUMERIC_WITH_CONVERSION = ["crash_date"]
-ORDINAL = ["intersection_related_i", "lighting_condition", "crash_type", "damage", "most_severe_injury"]
+ORDINAL = ["first_crash_type", "traffic_control_device", "intersection_related_i", "lighting_condition", "crash_type", "damage", "most_severe_injury"]
 
 NOMINAL = [
-    "traffic_control_device", "weather_condition", "first_crash_type", "trafficway_type", "alignment",
+    "weather_condition", "first_crash_type", "trafficway_type", "alignment",
     "roadway_surface_cond", "road_defect", "prim_contributory_cause"
 ]
 
-# Ordinal encoding dictionaries (domain-informed ordering). Adjust if needed.
-# If dataset uses 'lightning_condition' instead of 'lighting_condition', both handled.
+# !!! To see explanation of first_crash_type and traffic_control_device check in images the distribution of crash_type per variable per class !!!
 ordinal_mappings: dict[str, dict] = {
     "intersection_related_i": {"N": 0, "Y": 1},
     # Visibility / lighting: daylight best -> darkest worst
@@ -61,6 +60,47 @@ ordinal_mappings: dict[str, dict] = {
         "NON-INCAPACITATING INJURY": 3,
         "INCAPACITATING INJURY": 4,
         "FATAL": 5,
+    },
+    "traffic_control_device": {
+        "PEDESTRIAN CROSSING SIGN": 0.777,
+        "NO PASSING": 0.750,
+        "FLASHING CONTROL SIGNAL": 0.607,
+        "SCHOOL ZONE": 0.576,
+        "OTHER RAILROAD CROSSING": 0.565,
+        "YIELD": 0.558,
+        "OTHER WARNING SIGN": 0.526,
+        "STOP SIGN/FLASHER": 0.497,
+        "OTHER": 0.479,
+        "DELINEATORS": 0.471,
+        "BICYCLE CROSSING SIGN": 0.455,
+        "LANE USE MARKING": 0.438,
+        "NO CONTROLS": 0.424,
+        "TRAFFIC SIGNAL": 0.424,
+        "OTHER REG. SIGN": 0.398,
+        "RAILROAD CROSSING GATE": 0.385,
+        "POLICE/FLAGMAN": 0.317,
+        "RR CROSSING SIGN": 0.278,
+        "UNKNOWN": 0.275,
+    },
+    "first_crash_type": {
+        "OVERTURNED": 0.906,
+        "PEDESTRIAN": 0.896,
+        "TRAIN": 0.875,
+        "PEDALCYCLIST": 0.756,
+        "FIXED OBJECT": 0.717,
+        "HEAD ON": 0.677,
+        "ANGLE": 0.604,
+        "OTHER NONCOLLISION": 0.594,
+        "OTHER OBJECT": 0.582,
+        "REAR TO SIDE": 0.441,
+        "TURNING": 0.418,
+        "SIDESWIPE OPPOSITE DIRECTION": 0.355,
+        "PARKED MOTOR VEHICLE": 0.321,
+        "REAR END": 0.250,
+        "ANIMAL": 0.169,
+        "REAR TO FRONT": 0.145,
+        "SIDESWIPE SAME DIRECTION": 0.141,
+        "REAR TO REAR": 0.082,
     },
 }
 

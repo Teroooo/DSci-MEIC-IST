@@ -18,7 +18,7 @@ run_credit_score_correlation_analysis: bool = True
 run_sampling: bool = False
 sampling_amount: float = 0.001
 
-credit_score_filename: str = "../../classification/traffic_accidents.csv"
+credit_score_filename: str = "../../classification/traffic_accidents_encoded.csv"
 credit_score_savefig_path_prefix: str = "images/dimensionality/traffic_accidents/traffic_accidents"
 
 # credit_score_filename: str = "../../classification/Combined_Flights_2022.csv"
