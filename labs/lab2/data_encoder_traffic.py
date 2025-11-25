@@ -23,6 +23,9 @@ Notes:
 INPUT_PATH = Path(__file__).parent / ".." / ".." / "classification" / "traffic_accidents.csv"
 OUTPUT_PATH = Path(__file__).parent / ".." / ".." / "classification" / "traffic_accidents_encoded.csv"
 
+# Configuration flags
+DROP_UNKNOWN_ROWS = True  # If True, drop any record containing the string 'UNKNOWN' in any column
+
 # Variable groups (for clarity; not all are directly used as lists later)
 NUMERIC_NO_CONVERSION = [
     "num_units", "injuries_total", "injuries_fatal", "injuries_incapacitating",
@@ -30,16 +33,18 @@ NUMERIC_NO_CONVERSION = [
 ]
 CYCLICAL = ["crash_hour", "crash_day_of_week", "crash_month"]
 NUMERIC_WITH_CONVERSION = ["crash_date"]
-ORDINAL = ["first_crash_type", "traffic_control_device", "intersection_related_i", "lighting_condition", "crash_type", "damage", "most_severe_injury"]
+ORDINAL = ["first_crash_type", "traffic_control_device", "intersection_related_i", "road_defect", "roadway_surface_cond", "trafficway_type",
+            "alignment", "lighting_condition", "crash_type", "damage", "most_severe_injury", "prim_contributory_cause"]
 
-NOMINAL = [
-    "weather_condition", "first_crash_type", "trafficway_type", "alignment",
-    "roadway_surface_cond", "road_defect", "prim_contributory_cause"
-]
+NOMINAL = ["weather_condition"]
 
-# !!! To see explanation of first_crash_type and traffic_control_device check in images the distribution of crash_type per variable per class !!!
+# !!! To see explanation of first_crash_type and traffic_control_device check in images the distribution of crash_type per variable per class, basically target encoding !!!
 ordinal_mappings: dict[str, dict] = {
     "intersection_related_i": {"N": 0, "Y": 1},
+    "crash_type": {
+        "NO INJURY / DRIVE AWAY": 0,
+        "INJURY AND / OR TOW DUE TO CRASH": 1
+    },
     # Visibility / lighting: daylight best -> darkest worst
     "lighting_condition": {
         "DAYLIGHT": 1,
@@ -57,52 +62,47 @@ ordinal_mappings: dict[str, dict] = {
     "most_severe_injury": {
         "NO INDICATION OF INJURY": 1,
         "REPORTED, NOT EVIDENT": 2,
-        "NON-INCAPACITATING INJURY": 3,
+        "NONINCAPACITATING INJURY": 3,
         "INCAPACITATING INJURY": 4,
         "FATAL": 5,
     },
-    "traffic_control_device": {
-        "PEDESTRIAN CROSSING SIGN": 0.777,
-        "NO PASSING": 0.750,
-        "FLASHING CONTROL SIGNAL": 0.607,
-        "SCHOOL ZONE": 0.576,
-        "OTHER RAILROAD CROSSING": 0.565,
-        "YIELD": 0.558,
-        "OTHER WARNING SIGN": 0.526,
-        "STOP SIGN/FLASHER": 0.497,
-        "OTHER": 0.479,
-        "DELINEATORS": 0.471,
-        "BICYCLE CROSSING SIGN": 0.455,
-        "LANE USE MARKING": 0.438,
-        "NO CONTROLS": 0.424,
-        "TRAFFIC SIGNAL": 0.424,
-        "OTHER REG. SIGN": 0.398,
-        "RAILROAD CROSSING GATE": 0.385,
-        "POLICE/FLAGMAN": 0.317,
-        "RR CROSSING SIGN": 0.278,
-        "UNKNOWN": 0.275,
-    },
-    "first_crash_type": {
-        "OVERTURNED": 0.906,
-        "PEDESTRIAN": 0.896,
-        "TRAIN": 0.875,
-        "PEDALCYCLIST": 0.756,
-        "FIXED OBJECT": 0.717,
-        "HEAD ON": 0.677,
-        "ANGLE": 0.604,
-        "OTHER NONCOLLISION": 0.594,
-        "OTHER OBJECT": 0.582,
-        "REAR TO SIDE": 0.441,
-        "TURNING": 0.418,
-        "SIDESWIPE OPPOSITE DIRECTION": 0.355,
-        "PARKED MOTOR VEHICLE": 0.321,
-        "REAR END": 0.250,
-        "ANIMAL": 0.169,
-        "REAR TO FRONT": 0.145,
-        "SIDESWIPE SAME DIRECTION": 0.141,
-        "REAR TO REAR": 0.082,
-    },
+    # "traffic_control_device" and "first_crash_type" mappings are filled dynamically
+    # at runtime from the target-encoding style injury proportions.
+    "traffic_control_device": {},
+    "first_crash_type": {},
+    "trafficway_type": {},
+    "alignment": {},
+    "roadway_surface_cond": {},
+    "road_defect": {},
+    "prim_contributory_cause": {},
 }
+
+
+def compute_injury_proportions(df: pd.DataFrame, feature: str,
+                               target_col: str = "crash_type",
+                               injury_label: str = "INJURY AND / OR TOW DUE TO CRASH") -> dict:
+    """Compute P(target == injury_label | feature=value) for each class of feature.
+
+    Returns a dict {class_value: proportion_injury}.
+    """
+    if feature not in df.columns or target_col not in df.columns:
+        return {}
+
+    tmp = df[[feature, target_col]].dropna(subset=[feature, target_col])
+    # counts per (feature, target)
+    counts = tmp.groupby([feature, target_col]).size().unstack(fill_value=0)
+
+    # ensure injury column exists
+    if injury_label not in counts.columns:
+        counts[injury_label] = 0
+
+    totals = counts.sum(axis=1)
+    # avoid division by zero
+    proportions = (counts[injury_label] / totals).fillna(0.0)
+    # round to 2 decimal places for stable encoding
+    rounded = proportions.round(2)
+    #print(f"Computed injury proportions for {feature}: {rounded.to_dict()}")
+    return rounded.to_dict()
 
 
 def generate_mapping(values: list) -> dict:
@@ -128,6 +128,16 @@ def encode_cyclic_variables(df: pd.DataFrame, cols: list[str]) -> pd.DataFrame:
 
 def main():
     df = pd.read_csv(INPUT_PATH)
+
+    # Optionally drop any rows that contain the literal string 'UNKNOWN' in any column
+    if DROP_UNKNOWN_ROWS:
+        df = df[(df != "UNKNOWN").all(axis=1)]
+
+    # Dynamically compute target-encoding style mappings for selected ordinals
+    for col in ["first_crash_type", "traffic_control_device", "trafficway_type", "alignment", "roadway_surface_cond", "road_defect", "prim_contributory_cause"]:
+        if col in df.columns:
+            mapping = compute_injury_proportions(df, col)
+            ordinal_mappings[col] = mapping
 
     # crash_date -> epoch seconds (NUMERIC_WITH_CONVERSION)
     if "crash_date" in df.columns:

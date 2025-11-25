@@ -7,6 +7,11 @@ import pandas as pd
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_PATH = os.path.join(BASE_DIR, "..", "classification", "traffic_accidents.csv")
 
+# Adjust paths as needed
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_PATH = os.path.join(BASE_DIR, "..", "classification", "traffic_accidents.csv")
+
+
 NOMINAL = [
     "traffic_control_device",
     "weather_condition",
@@ -101,6 +106,8 @@ def plot_stacked_bar(percentages: pd.DataFrame, feature: str, max_categories: in
     plt.bar(x, no_injury, bottom=injury, label=TARGET_NO_INJURY)
 
     plt.xticks(x, categories, rotation=45, ha="right")
+    # Hide class names on the x-axis
+    #plt.xticks(x, [""] * len(categories))
     plt.ylabel("Percentage of records (%)")
     plt.title(f"{feature} vs {TARGET}")
     plt.ylim(0, 100)
