@@ -2,10 +2,16 @@ from matplotlib.pyplot import rcParams, style
 from matplotlib.colors import LinearSegmentedColormap
 from warnings import simplefilter
 from cycler import cycler
+import os
 
 # _________________________________________ STYLE ____________________________________________________
 simplefilter("ignore")
-style.use("dslabs.mplstyle")
+# Load style from same directory as this file
+style_path = os.path.join(os.path.dirname(__file__), "dslabs.mplstyle")
+if os.path.exists(style_path):
+    style.use(style_path)
+else:
+    print(f"Warning: dslabs.mplstyle not found at {style_path}, using default style")
 
 HATCHES = [".", "..", "...", "o"]  # ['/', '+', 'X', '*'] #'oo', 'OO', '..'
 

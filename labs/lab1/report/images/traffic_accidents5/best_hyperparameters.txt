@@ -1,0 +1,22 @@
+BEST HYPERPARAMETERS
+================================================================================
+
+Naïve Bayes:
+  variant: GaussianNB
+
+Logistic Regression:
+  penalty: l1
+  max_iter: 500
+  solver: liblinear
+
+Decision Tree:
+  criterion: entropy
+  max_depth: 6
+
+Multi-layer Perceptron:
+  learning_rate: adaptive
+  learning_rate_init: 0.5
+  max_iter: 500
+  activation: logistic
+  solver: sgd
+

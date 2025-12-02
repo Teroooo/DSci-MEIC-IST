@@ -2,28 +2,25 @@ BEST HYPERPARAMETERS
 ================================================================================
 
 Naïve Bayes:
-  var_smoothing: 1e-10
+  variant: GaussianNB
 
 Logistic Regression:
-  C: 0.01
+  penalty: l1
   max_iter: 500
-  solver: lbfgs
+  solver: liblinear
 
 KNN:
-  metric: euclidean
-  n_neighbors: 7
-  weights: uniform
+  n_neighbors: 15
+  metric: manhattan
 
 Decision Tree:
   criterion: gini
-  max_depth: 10
-  min_samples_leaf: 4
-  min_samples_split: 2
+  max_depth: 8
 
 Multi-layer Perceptron:
-  activation: relu
-  alpha: 0.0001
-  hidden_layer_sizes: (100,)
   learning_rate: adaptive
+  learning_rate_init: 0.5
   max_iter: 500
+  activation: logistic
+  solver: sgd
 

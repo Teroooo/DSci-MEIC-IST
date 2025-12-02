@@ -7,7 +7,7 @@ from math import pi, sin, cos, ceil, sqrt
 from itertools import product
 from datetime import datetime
 from typing import Callable
-from numpy import array, ndarray, arange, std, set_printoptions
+from numpy import array, ndarray, arange, std, set_printoptions, log
 from matplotlib.collections import PathCollection
 from matplotlib.colorbar import Colorbar
 from matplotlib.container import BarContainer
@@ -29,7 +29,11 @@ from sklearn.metrics import confusion_matrix, RocCurveDisplay, roc_auc_score
 from sklearn.naive_bayes import _BaseNB, GaussianNB, MultinomialNB, BernoulliNB
 from sklearn.neighbors import KNeighborsClassifier
 
-from config import (
+import random
+
+from scipy.stats import norm, expon, lognorm
+
+from .config import (
     ACTIVE_COLORS,
     LINE_COLOR,
     FILL_COLOR,
@@ -91,7 +95,7 @@ def set_chart_xticks(xvalues: list[str | int | float | datetime], ax: Axes, perc
             ax.set_xlim(left=xvalues[0], right=xvalues[-1])
             ax.set_xticks(xvalues, labels=xvalues)
         else:
-            rotation = 45
+            rotation = 90
 
         ax.tick_params(axis="x", labelrotation=rotation, labelsize="xx-small")
 
@@ -146,7 +150,7 @@ def plot_bar_chart(
         tick_label=xvalues,
     )
     format = "%.2f" if percentage else "%.0f"
-    ax.bar_label(values, fmt=format, fontproperties=FONT_TEXT)
+    #ax.bar_label(values, fmt=format, fontproperties=FONT_TEXT)
 
     return ax
 
@@ -901,3 +905,31 @@ def plot_forecasting_eval(trn: Series, tst: Series, prd_trn: Series, prd_tst: Se
     plot_multibar_chart(["train", "test"], ev2, ax=axs[1], title="Percentage error", percentage=True)
 
     return axs
+
+
+def histogram_with_distributions(ax: Axes, series: Series, var: str):
+    values: list = series.sort_values().to_list()
+    ax.hist(values, 20, density=True)
+    distributions: dict = compute_known_distributions(values)
+    plot_multiline_chart(
+        values,
+        distributions,
+        ax=ax,
+        title="Best fit for %s" % var,
+        xlabel=var,
+        ylabel="",
+    )
+def compute_known_distributions(x_values: list) -> dict:
+    distributions = dict()
+    # Gaussian
+    mean, sigma = norm.fit(x_values)
+    distributions["Normal(%.1f,%.2f)" % (mean, sigma)] = norm.pdf(x_values, mean, sigma)
+    # Exponential
+    loc, scale = expon.fit(x_values)
+    distributions["Exp(%.2f)" % (1 / scale)] = expon.pdf(x_values, loc, scale)
+    # LogNorm
+    sigma, loc, scale = lognorm.fit(x_values)
+    distributions["LogNor(%.1f,%.2f)" % (log(scale), sigma)] = lognorm.pdf(
+        x_values, sigma, loc, scale
+    )
+    return distributions
