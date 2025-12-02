@@ -3,6 +3,7 @@ from matplotlib.colors import LinearSegmentedColormap
 from pathlib import Path
 from warnings import simplefilter
 from cycler import cycler
+import os
 
 # _________________________________________ STYLE ____________________________________________________
 simplefilter("ignore")

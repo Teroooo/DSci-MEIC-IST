@@ -11,21 +11,21 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 from utils.dslabs_functions import get_variable_types, define_grid, HEIGHT, plot_multibar_chart, set_chart_labels
 from utils.dslabs_functions import plot_bar_chart, count_outliers, histogram_with_distributions
 
-run_credit_score_global_boxplot: bool = False
-run_credit_score_single_boxplots: bool = False
-run_credit_score_outliers: bool = False
-run_credit_score_histograms: bool = False
-run_credit_score_histograms_with_distributions: bool = False
+run_credit_score_global_boxplot: bool = True
+run_credit_score_single_boxplots: bool = True
+run_credit_score_outliers: bool = True
+run_credit_score_histograms: bool = True
+run_credit_score_histograms_with_distributions: bool = True
 run_credit_score_histograms_symbolic: bool = True # check X-axis text
-run_credit_score_class_distribution: bool = False
+run_credit_score_class_distribution: bool = True
 run_sampling = False
-sampling_amount = 0.01
+sampling_amount = 0.125
 
-filename = "../../classification/traffic_accidents.csv"
-savefig_path_prefix = "images/distribution/traffic_accidents/traffic_accidents"
+# filename = "../../classification/traffic_accidents.csv"
+# savefig_path_prefix = "images/distribution/traffic_accidents"
 
-# filename = "../../classification/Combined_Flights_2022.csv"
-# savefig_path_prefix = "images/distribution/Combined_Flights_2022/Combined_Flights_2022"
+filename = "../../classification/Combined_Flights_2022.csv"
+savefig_path_prefix = "images/distribution/Combined_Flights_2022"
 
 # Create output directory if it doesn't exist
 os.makedirs(os.path.dirname(savefig_path_prefix), exist_ok=True)
