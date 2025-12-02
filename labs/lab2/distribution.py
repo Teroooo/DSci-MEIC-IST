@@ -79,7 +79,7 @@ if credit_score_numeric and run_credit_score_single_boxplots:
     )
     i, j = 0, 0
     for n in range(len(credit_score_numeric)):
-        axs[i, j].set_yscale('symlog')
+        axs[i, j].set_yscale('linear')
         axs[i, j].set_title("Boxplot for %s" % credit_score_numeric[n])
         axs[i, j].boxplot(credit_score_data[credit_score_numeric[n]].dropna().values)
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
@@ -149,7 +149,10 @@ if credit_score_numeric and run_credit_score_histograms:
             xlabel=credit_score_numeric[n],
             ylabel="nr records",
         )
-        axs[i, j].hist(data, "auto")
+        if credit_score_numeric[n] == "MonthlyBalance":
+            axs[i, j].hist(data, bins=1000, log=True)
+        else:
+            axs[i, j].hist(data, "auto", log=True)
         i, j = (i + 1, 0) if (n + 1) % cols == 0 else (i, j + 1)
     plt.tight_layout()
     plt.savefig(f"{savefig_path_prefix}_single_histograms_numeric.png")

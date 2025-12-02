@@ -1,18 +1,20 @@
 from matplotlib.pyplot import rcParams, style
 from matplotlib.colors import LinearSegmentedColormap
+from pathlib import Path
 from warnings import simplefilter
 from cycler import cycler
 import os
 
 # _________________________________________ STYLE ____________________________________________________
 simplefilter("ignore")
-# Load style from same directory as this file
-style_path = os.path.join(os.path.dirname(__file__), "dslabs.mplstyle")
-if os.path.exists(style_path):
-    style.use(style_path)
-else:
-    print(f"Warning: dslabs.mplstyle not found at {style_path}, using default style")
+# get the path of the current file (config.py)
+config_dir = Path(__file__).parent
 
+# build the absolute path to dslabs.mplstyle in the same folder
+style_file = config_dir / "dslabs.mplstyle"
+
+# use it
+style.use(style_file)
 HATCHES = [".", "..", "...", "o"]  # ['/', '+', 'X', '*'] #'oo', 'OO', '..'
 
 my_palette = {
@@ -107,4 +109,4 @@ rcParams["boxplot.whiskerprops.color"] = LINE_COLOR
 rcParams["boxplot.meanprops.color"] = my_palette["purple"]
 rcParams["boxplot.meanprops.markeredgecolor"] = my_palette["purple"]
 rcParams["boxplot.meanprops.markerfacecolor"] = my_palette["purple"]
-rcParams["boxplot.medianprops.color"] = my_palette["green"]
+rcParams["boxplot.medianprops.color"] = my_palette["yellow"]

@@ -21,6 +21,7 @@ from matplotlib.dates import AutoDateLocator, AutoDateFormatter
 from pandas import DataFrame, Series, Index, Period
 from pandas import read_csv, concat, to_numeric, to_datetime
 from pandas.api.types import is_integer_dtype, is_any_real_numeric_dtype
+from scipy.stats import norm, expon, lognorm
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.impute import SimpleImputer, KNNImputer
 from sklearn.metrics import accuracy_score, recall_score, precision_score
@@ -281,6 +282,19 @@ def plot_multi_scatters_chart(
     ax = set_chart_labels(ax=ax, title=title, xlabel=var1, ylabel=var2)
     return ax
 
+def histogram_with_distributions(ax: Axes, series: Series, var: str):
+    values: list = series.sort_values().to_list()
+    ax.hist(values, 20, density=True)
+    distributions: dict = compute_known_distributions(values)
+    plot_multiline_chart(
+        values,
+        distributions,
+        ax=ax,
+        title="Best fit for %s" % var,
+        xlabel=var,
+        ylabel="",
+    )
+
 
 # ---------------------------------------
 #             DATA PROFILING
@@ -396,6 +410,28 @@ def analyse_property_granularity(data: DataFrame, property: str, vars: list[str]
             percentage=False,
         )
     return axs
+
+def compute_known_distributions(x_values: list) -> dict:
+    distributions = dict()
+
+    # Gaussian
+    mean, sigma = norm.fit(x_values)
+    mean_str = "{:e}".format(mean) if abs(mean) > 99999 else "{:.1f}".format(mean)
+    sigma_str = "{:e}".format(sigma) if abs(sigma) > 99999 else "{:.2f}".format(sigma)
+    distributions["Normal({}, {})".format(mean_str, sigma_str)] = norm.pdf(x_values, mean, sigma)
+
+    # Exponential
+    loc, scale = expon.fit(x_values)
+    scale_str = "{:e}".format(1 / scale) if abs(1 / scale) > 99999 else "{:.2f}".format(1 / scale)
+    distributions["Exp({})".format(scale_str)] = expon.pdf(x_values, loc, scale)
+
+    # LogNorm
+    sigma, loc, scale = lognorm.fit(x_values)
+    sigma_str = "{:e}".format(sigma) if abs(sigma) > 99999 else "{:.1f}".format(sigma)
+    scale_str = "{:e}".format(log(scale)) if abs(log(scale)) > 99999 else "{:.2f}".format(log(scale))
+    distributions["LogNor({}, {})".format(scale_str, sigma_str)] = lognorm.pdf(x_values, sigma, loc, scale)
+
+    return distributions
 
 
 # ---------------------------------------
