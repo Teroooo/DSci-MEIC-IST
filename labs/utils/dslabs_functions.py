@@ -15,6 +15,7 @@ from matplotlib.figure import Figure
 from matplotlib.font_manager import FontProperties
 from matplotlib.axes import Axes
 from matplotlib.pyplot import gca, gcf, savefig, subplots, text
+import matplotlib.pyplot as plt
 from matplotlib.dates import AutoDateLocator, AutoDateFormatter
 
 # from matplotlib.dates import _reset_epoch_test_example, set_epoch
@@ -715,16 +716,19 @@ def evaluate_approach(
     return eval
 
 
-def read_train_test_from_files(
-    train_fn: str, test_fn: str, target: str = "class"
-) -> tuple[ndarray, ndarray, array, array, list, list]:
+def read_train_test_from_files(train_fn: str, test_fn: str, target: str = "class", sample_amount: float = 1.0
+                               ) -> tuple[ndarray, ndarray, array, array, list, list]:
     train: DataFrame = read_csv(train_fn, index_col=None)
+    if sample_amount < 1:
+        train = train.sample(frac=sample_amount, random_state=42)
     labels: list = list(train[target].unique())
     labels.sort()
     trnY: array = train.pop(target).to_list()
     trnX: ndarray = train.values
 
     test: DataFrame = read_csv(test_fn, index_col=None)
+    if sample_amount < 1:
+        test = test.sample(frac=sample_amount, random_state=42)
     tstY: array = test.pop(target).to_list()
     tstX: ndarray = test.values
     return trnX, tstX, trnY, tstY, labels, train.columns.to_list()
@@ -969,3 +973,48 @@ def compute_known_distributions(x_values: list) -> dict:
         x_values, sigma, loc, scale
     )
     return distributions
+
+# ---------------------------------------
+#        MODEL STUDIES
+# ---------------------------------------
+
+def knn_study2(trnX, trnY, tstX, tstY, k_max=19, lag=2, file_tag=''):
+    dist = ['manhattan', 'euclidean', 'chebyshev']
+
+    kvalues = [i for i in range(1, k_max + 1, lag)]
+    best_model = None
+    best_params = {'name': 'KNN', 'params': (), 'metric': 'accuracy'}
+    best_performance = 0
+
+    plt.figure()
+    eval_metrics = list(CLASS_EVAL_METRICS.keys())
+    cols = len(eval_metrics)
+    fig, axs = plt.subplots(1, cols, figsize=(cols * HEIGHT, HEIGHT), squeeze=False)
+    fig.suptitle(f"KNN Study ({file_tag})")
+
+    values = {metric: {} for metric in eval_metrics}
+    # run only one KNN and study all metrics
+    for d in dist:
+        print(f"Distance: {d}")
+        y_tst_values = {metric: [] for metric in eval_metrics}
+        for k in kvalues:
+            clf = KNeighborsClassifier(n_neighbors=k, metric=d)
+            clf.fit(trnX, trnY)
+            prdY = clf.predict(tstX)
+            for metric in eval_metrics:
+                eval = CLASS_EVAL_METRICS[metric](tstY, prdY)
+                y_tst_values[metric].append(eval)
+                if eval - best_performance > DELTA_IMPROVE:
+                    best_performance = eval
+                    best_params['params'] = (k, d)
+                    best_model = clf
+        for metric in eval_metrics:
+            values[metric][d] = y_tst_values[metric]
+
+    for i in range(cols):
+        metric = eval_metrics[i]
+        plot_multiline_chart(kvalues, values[metric], title=f'KNN Models ({metric})', xlabel='k', ylabel=metric,
+                             percentage=True,
+                             ax=axs[0][i])
+
+    return best_model, best_params
