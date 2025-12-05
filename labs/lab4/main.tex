@@ -1,0 +1,343 @@
+\documentclass[10pt]{extarticle}
+\renewcommand{\arraystretch}{1.5}
+\renewcommand{\baselinestretch}{1.5}
+\usepackage[onehalfspacing]{setspace}
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0.2em}
+\font\myfont=cmr12 at 26pt
+\usepackage{anyfontsize}
+\usepackage{tabularx}
+\usepackage{multirow}
+\pagenumbering{arabic} 
+\usepackage{soul}
+\usepackage{xcolor}
+\usepackage[T1]{fontenc}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{blindtext}
+\usepackage{titling}
+\setlength{\droptitle}{-14em}   % This is your set screw
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{eso-pic}
+\graphicspath{ {./images/} }
+\usepackage{subcaption}
+\usepackage{geometry}
+\usepackage[section]{placeins}
+\geometry{margin=2cm, bmargin=2cm, tmargin=3cm}
+
+\newcommand{\ctext}[3][RGB]{%
+  \begingroup
+  \definecolor{hlcolor}{#1}{#2}\sethlcolor{hlcolor}%
+  \hl{#3}%
+  \endgroup
+}
+
+
+\begin{document}
+
+
+\AddToShipoutPictureBG*{
+\AtPageUpperLeft{
+\hspace{19.5cm}
+\raisebox{-2.5cm}{\makebox[0pt][r]{\fontsize{36}{1cm}\selectfont DS 2024\par}}}}
+
+\AddToShipoutPictureBG*{
+\AtPageUpperLeft{
+\hspace{6.5cm}
+\raisebox{-3.5cm}{
+\makebox[0pt][r]{ 
+\includegraphics[scale=0.95]{tecnico_logo.jpg}\\[3cm]}}}}
+
+
+\title{{\myfont Data Science Project}}  % Title
+\setlength{\droptitle}{1cm}
+
+\date{\vspace{-9ex}} % Date for the report, skipped and used to adjust height
+\maketitle % Insert the title, author and date
+\begin{center}
+    %\setlength\extrarowheight{7pt}
+    \begin{tabular}{ |l|l l|l| }
+        \hline
+        \multirow{4}{6em}{\textbf{Team nr: } 16} & \textbf{Student 1: } Antero Morgado & \textbf{IST nr: } 1119213\\
+        & \textbf{Student 2: } David Ferreira & \textbf{IST nr:} 1107077 \\
+        & \textbf{Student 3: } José Fernandes & \textbf{IST nr: } 1103727 \\
+        & \textbf{Student 4: } Olha Buts & \textbf{IST nr: } 1116276 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\begin{center}
+	\section*{\fontsize{0.75cm}{1cm}\selectfont CLASSIFICATION}
+\end{center}
+
+
+\section{MODELS' EVALUATION}
+\ctext[RGB]{190,190,190}{Shall be used to point out any important decision taken during the training, including training strategy and evaluation measures used.  \textbf{Shall not exceed 500 characters.}}
+
+\subsection*{\textit{Na{\"i}ve Bayes}}
+
+\begin{figure}[H]
+\centering\includegraphics[scale=0.5]{traffic_final/NB/traffic accidents_nb_accuracy_study.png}
+\caption{Na{\"i}ve Bayes alternatives comparison for dataset 1}
+\end{figure}
+
+\begin{figure}[H]
+\centering\includegraphics[scale=0.5]{Combined_flight_v1/NB/Combined_flight_v1_nb_accuracy_study.png}
+\caption{Na{\"i}ve Bayes alternative comparison for dataset 2}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{traffic_final/NB/traffic accidents_BernoulliNB_best_recall_eval.png}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{Combined_flight_v1/NB/Combined_flight_v1_BernoulliNB_best_recall_eval.png}
+\end{subfigure}
+\caption{Na{\"i}ve Bayes best model results for dataset 1 (left) and dataset 2 (right)}
+\end{figure}
+
+\subsection*{\textit{KNN}}
+
+\begin{figure}[H]
+\centering\includegraphics[scale=0.5]{knn/images/traffic_knn_accuracy_study.png}
+\caption{KNN different parameterisations comparison for dataset 1}
+\end{figure}
+
+\begin{figure}[H]
+\centering\includegraphics[scale=0.5]{knn/images/cflights_knn_accuracy_study.png}
+\caption{KNN different parameterisations comparison for dataset 2}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{knn/images/traffic_knn_overfitting.png}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{knn/images/cflights_knn_overfitting.png}
+\end{subfigure}
+\caption{KNN overfitting analysis for dataset 1 (left) and dataset 2 (right)}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{knn/images/traffic_knn_KNN_best_accuracy_eval.png}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{knn/images/cflights_knn_KNN_best_accuracy_eval.png}
+\end{subfigure}
+\caption{KNN best model results for dataset 1 (left) and dataset 2 (right)}
+\end{figure}
+
+\subsection*{\textit{Logistic Regression}}
+
+\begin{figure}[H]
+\centering\includegraphics[scale=0.5]{lr/images/traffic_lr_accuracy_study.png}
+\caption{Logistic Regression different parameterisations comparison for dataset 1}
+\end{figure}
+
+\begin{figure}[H]
+\centering\includegraphics[scale=0.5]{lr/images/cflights_lr_accuracy_study.png}
+\caption{Logistic Regression different parameterisations comparison for dataset 2}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{lr/images/traffic_lr_accuracy_overfitting.png}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{lr/images/cflights_lr_accuracy_overfitting.png}
+\end{subfigure}
+\caption{Logistic Regression overfitting analysis for dataset 1 (left) and dataset 2 (right)}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{lr/images/traffic_lr_LR_best_accuracy_eval.png}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{lr/images/cflights_lr_LR_best_accuracy_eval.png}
+\end{subfigure}
+\caption{Logistic Regression best model results for dataset 1 (left) and dataset 2 (right)}
+\end{figure}
+
+\subsection*{\textit{Decision Trees}}
+
+\begin{figure}[H]
+\centering\includegraphics[scale=0.5]{dt/Traffic-dt/Traffic_dt_accuracy_study.png}
+\caption{Decision Trees different parameterisations comparison for dataset 1}
+\end{figure}
+
+\begin{figure}[H]
+\centering\includegraphics[scale=0.5]{dt/Flight-dt/Flight_dt_accuracy_study.png}
+\caption{Decision Trees different parameterisations comparison for dataset 2}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{dt/Traffic-dt/Traffic_dt_accuracy_overfitting.png}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{dt/Flight-dt/Flight_dt_accuracy_overfitting.png}
+\end{subfigure}
+\caption{Decision Trees overfitting analysis for dataset 1 (left) and dataset 2 (right)}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{dt/Traffic-dt/Traffic_dt_DT_best_accuracy_eval.png}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{dt/Flight-dt/Flight_dt_DT_best_accuracy_eval.png}
+\end{subfigure}
+\caption{Decision trees best model results for dataset 1 (left) and dataset 2 (right)}
+\end{figure}
+
+\begin{figure}[H]
+\centering\includegraphics[width=0.9\textwidth]{dt/Traffic-dt/Traffic_dt_accuracy_best_tree.png}
+\caption{Best tree for dataset 1}
+\end{figure}
+
+\begin{figure}[H]
+\centering\includegraphics[width=0.7\textwidth]{dt/Flight-dt/Flight_dt_accuracy_best_tree.png}
+\caption{Best tree for dataset 2}
+\end{figure}
+
+\subsection*{\textit{Random Forests}}
+
+\begin{figure}[H]
+\centering\includegraphics[scale=0.5]{rf/Traffic-rf/Traffic_rf_accuracy_study.png}
+\caption{Random Forests different parameterisations comparison for dataset 1}
+\end{figure}
+
+\begin{figure}[H]
+\centering\includegraphics[scale=0.5]{rf/Flight-rf/Flight_rf_accuracy_study.png}
+\caption{Random Forests different parameterisations comparison for dataset 2}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{rf/Traffic-rf/Traffic_rf_accuracy_overfitting.png}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{rf/Flight-rf/Flight_rf_accuracy_overfitting.png}
+\end{subfigure}
+\caption{Random Forests overfitting analysis for dataset 1 (left) and dataset 2 (right)}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{rf/Traffic-rf/Traffic_rf_RF_best_accuracy_eval.png}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{rf/Flight-rf/Flight_rf_RF_best_accuracy_eval.png}
+\end{subfigure}
+\caption{Random Forests best model results for dataset 1 (left) and dataset 2 (right)}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{rf/Traffic-rf/Traffic_rf_accuracy_vars_ranking.png}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{rf/Flight-rf/Flight_rf_accuracy_vars_ranking.png}
+\end{subfigure}
+\caption{Random Forests variables importance for dataset 1 (left) and dataset 2 (right)}
+\end{figure}
+
+\subsection*{\textit{Gradient Boosting}}
+
+\begin{figure}[H]
+%\centering\includegraphics[scale=0.95]{}
+\caption{Gradient boosting different parameterisations comparison for dataset 1}
+\end{figure}
+
+\begin{figure}[H]
+%\centering\includegraphics[scale=0.95]{}
+\caption{Gradient boosting different parameterisations comparison for dataset 2}
+\end{figure}
+
+\begin{figure}[H]
+%\centering\includegraphics[scale=0.95]{}
+\caption{Gradient boosting overfitting analysis for dataset 1 (left) and dataset 2 (right)}
+\end{figure}
+
+\begin{figure}[H]
+%\centering\includegraphics[scale=0.95]{}
+\caption{Gradient boosting best model results for dataset 1 (left) and dataset 2 (right)}
+\end{figure}
+
+\begin{figure}[H]
+%\centering\includegraphics[scale=0.95]{}
+\caption{Gradient boosting variables importance for dataset 1 (left) and dataset 2 (right)}
+\end{figure}
+
+\subsection*{\textit{Multi-Layer Perceptrons}}
+
+\begin{figure}[H]
+\centering\includegraphics[scale=0.5]{traffic_final/MLP/traffic_accidents_mlp_accuracy_study.png}
+\caption{MLP different parameterisations comparison for dataset 1}
+\end{figure}
+
+\begin{figure}[H]
+\centering\includegraphics[scale=0.5]{Combined_flight_v1/MLP/Combined_flight_v1_mlp_accuracy_study.png}
+\caption{MLP different parameterisations comparison for dataset 2}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{traffic_final/MLP/traffic_accidents_mlp_accuracy_overfitting.png}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{Combined_flight_v1/MLP/Combined_flight_v1_mlp_accuracy_overfitting.png}
+\end{subfigure}
+\caption{MLP overfitting analysis for dataset 1 (left) and dataset 2 (right)}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{traffic_final/MLP/traffic_accidents_mlp_accuracy_loss_curve.png}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{Combined_flight_v1/MLP/Combined_flight_v1_mlp_accuracy_loss_curve.png}
+\end{subfigure}
+\caption{Loss curve analysis for dataset 1 (left) and dataset 2 (right)}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{traffic_final/MLP/traffic_accidents_mlp_MLP_best_accuracy_eval.png}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\includegraphics[width=\textwidth]{Combined_flight_v1/MLP/Combined_flight_v1_mlp_MLP_best_accuracy_eval.png}
+\end{subfigure}
+\caption{MLP best model results for dataset 1 (left) and dataset 2 (right)}
+\end{figure}
+
+\end{document}
