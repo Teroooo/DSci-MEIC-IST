@@ -2,6 +2,7 @@ import sys
 import os
 from numpy import array, ndarray
 from matplotlib.pyplot import figure, savefig, show
+from matplotlib import pyplot as plt
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
@@ -67,16 +68,16 @@ def logistic_regression_study(
     return best_model, best_params
 
 
-#file_tag = "traffic"
-#train_filename = '../../../../traffic_final_train.csv'
-#test_filename = '../../../../traffic_final_test.csv'
-#target = "crash_type"
-file_tag = "cflights"
-train_filename = '../../../../cflights_train.csv'
-test_filename = '../../../../cflights_test.csv'
-target = "Cancelled"
+file_tag = "traffic"
+train_filename = '../../../../traffic_final_train.csv'
+test_filename = '../../../../traffic_final_test.csv'
+target = "crash_type"
+#file_tag = "cflights"
+#train_filename = '../../../../cflights_train.csv'
+#test_filename = '../../../../cflights_test.csv'
+#target = "Cancelled"
 eval_metric = "accuracy"
-sample_frac: float = 1  # fraction of data to use (0 < sample_frac <= 1]
+sample_frac: float = 0.2  # fraction of data to use (0 < sample_frac <= 1]
 
 
 trnX, tstX, trnY, tstY, labels, vars = read_train_test_from_files(
@@ -150,3 +151,25 @@ plot_multiline_chart(
     percentage=True,
 )
 savefig(f"images/{file_tag}_lr_{eval_metric}_overfitting.png")
+
+# --- Variables' importance (coefficients magnitude) ---
+if best_model is not None:
+    # coef_ shape: (n_classes, n_features) or (1, n_features)
+    import numpy as _np
+
+    coef = best_model.coef_
+    # Aggregate importance across classes by mean absolute value
+    importance = _np.mean(_np.abs(coef), axis=0)
+    feature_names = vars if isinstance(vars, list) and len(vars) == len(importance) else [f"f{i}" for i in range(len(importance))]
+
+    # Sort for a cleaner plot
+    order = _np.argsort(importance)
+    sorted_importance = importance[order]
+    sorted_features = [feature_names[i] for i in order]
+
+    figure(figsize=(8, max(4, len(sorted_features) * 0.25)))
+    plt.barh(sorted_features, sorted_importance)
+    plt.title("LR Feature Importance (|coef|, mean across classes)")
+    plt.xlabel("Importance")
+    plt.tight_layout()
+    savefig(f"images/{file_tag}_lr_feature_importance.png")

@@ -36,6 +36,22 @@ def load_and_clean_data(filepath, target_column, dataset_name=None):
     
     # Drop columns that are completely empty
     df = df.dropna(axis=1, how='all')
+
+    # Traffic-specific: drop injury-related columns if present
+    if dataset_name == 'traffic_accidents':
+        drop_cols = [
+            "most_severe_injury",
+            "injuries_total",
+            "injuries_fatal",
+            "injuries_incapacitating",
+            "injuries_non_incapacitating",
+            "injuries_reported_not_evident",
+            "injuries_no_indication",
+        ]
+        existing = [c for c in drop_cols if c in df.columns]
+        if existing:
+            print(f"\n[Traffic Dataset] Dropping injury columns: {existing}")
+            df = df.drop(columns=existing)
     
     # PREPROCESSING: Encode categorical target to numeric BEFORE dropping rows
     # This converts text labels to numbers, making the target "numeric"
@@ -425,7 +441,11 @@ def train_mlp(X_train, X_test, y_train, y_test, output_dir):
                     max_iter=max_iter,
                     activation='logistic',
                     solver='sgd',
-                    random_state=42
+                    random_state=42,
+                    early_stopping=True,
+                    n_iter_no_change=20,
+                    validation_fraction=0.1,
+                    tol=1e-4
                 )
                 model.fit(X_train, y_train)
                 y_pred = model.predict(X_test)
@@ -444,7 +464,11 @@ def train_mlp(X_train, X_test, y_train, y_test, output_dir):
                         'learning_rate_init': lr,
                         'max_iter': max_iter,
                         'activation': 'logistic',
-                        'solver': 'sgd'
+                        'solver': 'sgd',
+                        'early_stopping': True,
+                        'n_iter_no_change': 20,
+                        'validation_fraction': 0.1,
+                        'tol': 1e-4
                     }
                 
                 print(f"  lr_type={lr_type}, lr={lr}, max_iter={max_iter}: accuracy={test_acc:.4f}")
@@ -508,12 +532,12 @@ def get_dataset_config(dataset_choice):
     """Get dataset configuration based on user choice"""
     datasets = {
         '1': {
-            'path': '../../classification/traffic_accidents.csv',
+            'path': '../../../traffic_accidents.csv',
             'name': 'traffic_accidents',
             'target': 'crash_type'  # Predict type of crash
         },
         '2': {
-            'path': '../../classification/Combined_Flights_2022.csv',
+            'path': '../../../Combined_Flights_2022.csv',
             'name': 'Combined_Flights_2022',
             'target': 'Cancelled'  # Predict if flight will be cancelled
         }
@@ -586,14 +610,14 @@ def main():
     best_params = {}
     
     # Naïve Bayes
-    #model, metrics, params = train_naive_bayes(X_train, X_test, y_train, y_test, output_dir)
-    #results.append(metrics)
-    #best_params['Naïve Bayes'] = params
+    model, metrics, params = train_naive_bayes(X_train, X_test, y_train, y_test, output_dir)
+    results.append(metrics)
+    best_params['Naïve Bayes'] = params
     
     # Logistic Regression
-    #model, metrics, params = train_logistic_regression(X_train, X_test, y_train, y_test, output_dir)
-    #results.append(metrics)
-    #best_params['Logistic Regression'] = params
+    model, metrics, params = train_logistic_regression(X_train, X_test, y_train, y_test, output_dir)
+    results.append(metrics)
+    best_params['Logistic Regression'] = params
     
     # KNN
     model, metrics, params = train_knn(X_train, X_test, y_train, y_test, output_dir)
@@ -601,14 +625,14 @@ def main():
     best_params['KNN'] = params
     
     # Decision Tree
-    #model, metrics, params = train_decision_tree(X_train, X_test, y_train, y_test, output_dir)
-    #results.append(metrics)
-    #best_params['Decision Tree'] = params
+    model, metrics, params = train_decision_tree(X_train, X_test, y_train, y_test, output_dir)
+    results.append(metrics)
+    best_params['Decision Tree'] = params
     
     # MLP
-    #model, metrics, params = train_mlp(X_train, X_test, y_train, y_test, output_dir)
-    #results.append(metrics)
-    #best_params['Multi-layer Perceptron'] = params
+    model, metrics, params = train_mlp(X_train, X_test, y_train, y_test, output_dir)
+    results.append(metrics)
+    best_params['Multi-layer Perceptron'] = params
     
     # Create results DataFrame
     results_df = pd.DataFrame(results)

@@ -13,14 +13,23 @@ DATA_PATH = os.path.join(BASE_DIR, "..", "classification", "traffic_accidents.cs
 
 
 NOMINAL = [
-    "traffic_control_device",
-    "weather_condition",
-    "first_crash_type",
-    "trafficway_type",
-    "alignment",
-    "roadway_surface_cond",
-    "road_defect",
-    "prim_contributory_cause",
+    #"traffic_control_device",
+    #"weather_condition",
+    #"first_crash_type",
+    #"trafficway_type",
+    #"alignment",
+    #"roadway_surface_cond",
+    #"road_defect",
+    #"prim_contributory_cause",
+    #"most_severe_injury",
+    #"injuries_total",
+    #"injuries_fatal",
+    #"injuries_incapacitating",
+    #"injuries_non_incapacitating",
+    #"injuries_reported_not_evident",
+    #"injuries_no_indication"
+    #"weather_condition",
+    #"first_crash_type",
 ]
 
 TARGET = "crash_type"
