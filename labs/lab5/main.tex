@@ -1,0 +1,177 @@
+\documentclass[10pt]{extarticle}
+\renewcommand{\arraystretch}{1.5}
+\renewcommand{\baselinestretch}{1.5}
+\usepackage[onehalfspacing]{setspace}
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0.2em}
+\font\myfont=cmr12 at 26pt
+\usepackage{anyfontsize}
+\usepackage{tabularx}
+\usepackage{multirow}
+\pagenumbering{arabic} 
+\usepackage{soul}
+\usepackage{xcolor}
+\usepackage[T1]{fontenc}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{blindtext}
+\usepackage{titling}
+\setlength{\droptitle}{-14em}   % This is your set screw
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{eso-pic}
+\graphicspath{ {./images/} }
+\usepackage{subcaption}
+\usepackage{geometry}
+\usepackage[section]{placeins}
+\geometry{margin=2cm, bmargin=2cm, tmargin=3cm}
+
+\newcommand{\ctext}[3][RGB]{%
+  \begingroup
+  \definecolor{hlcolor}{#1}{#2}\sethlcolor{hlcolor}%
+  \hl{#3}%
+  \endgroup
+}
+
+
+\begin{document}
+
+
+\AddToShipoutPictureBG*{
+\AtPageUpperLeft{
+\hspace{19.5cm}
+\raisebox{-2.5cm}{\makebox[0pt][r]{\fontsize{36}{1cm}\selectfont DS 2024\par}}}}
+
+\AddToShipoutPictureBG*{
+\AtPageUpperLeft{
+\hspace{6.5cm}
+\raisebox{-3.5cm}{
+\makebox[0pt][r]{ 
+\includegraphics[scale=0.95]{tecnico_logo.jpg}\\[3cm]}}}}
+
+
+\title{{\myfont Data Science Project}}  % Title
+\setlength{\droptitle}{1cm}
+
+\date{\vspace{-9ex}} % Date for the report, skipped and used to adjust height
+\maketitle % Insert the title, author and date
+\begin{center}
+    %\setlength\extrarowheight{7pt}
+    \begin{tabular}{ |l|l l|l| }
+        \hline
+        \multirow{4}{6em}{\textbf{Team nr: } 16} & \textbf{Student 1: } Antero Morgado & \textbf{IST nr: } 1119213\\
+        & \textbf{Student 2: } David Ferreira & \textbf{IST nr:} 1107077 \\
+        & \textbf{Student 3: } José Fernandes & \textbf{IST nr: } 1103727 \\
+        & \textbf{Student 4: } Olha Buts & \textbf{IST nr: } 1116276 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\begin{center}
+	\section*{\fontsize{0.75cm}{1cm}\selectfont TIME SERIES ANALYSIS}
+\end{center}
+
+\section{DATA PROFILING}
+
+\subsection*{\textit{Data Dimensionality and Granularity}}
+\ctext[RGB]{190,190,190}{May be used to identify the most atomic granularity and two other different granularities to consider.  \textbf{Shall not exceed 500 characters.}}
+
+\begin{figure}[H]
+%\centering\includegraphics[scale=0.95]{}
+\caption{Time series 1 at the most granular detail}
+\end{figure}
+
+\begin{figure}[H]
+%\centering\includegraphics[scale=0.95]{}
+\caption{Time series 1 at the second chosen granularity}
+\end{figure}
+
+\begin{figure}[H]
+%\centering\includegraphics[scale=0.95]{}
+\caption{Time series 1 at the third chosen granularity}
+\end{figure}
+
+\begin{figure}[H]
+%\centering\includegraphics[scale=0.95]{}
+\caption{Time series 2 at the most granular detail}
+\end{figure}
+
+\begin{figure}[H]
+%\centering\includegraphics[scale=0.95]{}
+\caption{Time series 2 at the second chosen granularity}
+\end{figure}
+
+\begin{figure}[H]
+%\centering\includegraphics[scale=0.95]{}
+\caption{Time series 2 at the third chosen granularity}
+\end{figure}
+
+\subsection*{\textit{Data Distribution}}
+\ctext[RGB]{190,190,190}{Shall be used to perform the data analysis at those three different granularities, concerning the series distribution.  \textbf{Shall not exceed 500 characters.}}
+
+\begin{figure}[H]
+%\centering\includegraphics[scale=0.95]{}
+\caption{Boxplot(s) for time series 1}
+\end{figure}
+
+\begin{figure}[H]
+%\centering\includegraphics[scale=0.95]{}
+\caption{Boxplot(s) for time series 2}
+\end{figure}
+
+\begin{figure}[H]
+%\centering\includegraphics[scale=0.95]{}
+\caption{Histogram(s) for time series 1}
+\end{figure}
+
+\begin{figure}[H]
+%\centering\includegraphics[scale=0.95]{}
+\caption{Histogram(s) for time series 2}
+\end{figure}
+
+\begin{figure}[H]
+%\centering\includegraphics[scale=0.95]{}
+\caption{Autocorrelation lag-plots for original time series 1}
+\end{figure}
+
+\begin{figure}[H]
+%\centering\includegraphics[scale=0.95]{}
+\caption{Autocorrelation lag-plots for original time series 2}
+\end{figure}
+
+\begin{figure}[H]
+%\centering\includegraphics[scale=0.95]{}
+\caption{Autocorrelation correlogram for original time series 1}
+\end{figure}
+
+\begin{figure}[H]
+%\centering\includegraphics[scale=0.95]{}
+\caption{Autocorrelation correlogram for original time series 2}
+\end{figure}
+
+\subsection*{\textit{Data Stationarity}}
+\ctext[RGB]{190,190,190}{Shall be used to perform the data analysis at those three different granularities, concerning the series stationarity.  \textbf{Shall not exceed 300 characters.}}
+
+\begin{figure}[H]
+%\centering\includegraphics[scale=0.95]{}
+\caption{Components study for time series 1}
+\end{figure}
+
+
+\begin{figure}[H]
+%\centering\includegraphics[scale=0.95]{}
+\caption{Stationarity study for time series 1}
+\end{figure}
+
+\begin{figure}[H]
+%\centering\includegraphics[scale=0.95]{}
+\caption{Components study for time series 2}
+\end{figure}
+
+
+\begin{figure}[H]
+%\centering\includegraphics[scale=0.95]{}
+\caption{Stationarity study for time series 2}
+\end{figure}
+
+\end{document}

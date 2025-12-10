@@ -1018,3 +1018,20 @@ def knn_study2(trnX, trnY, tstX, tstY, k_max=19, lag=2, file_tag=''):
                              ax=axs[0][i])
 
     return best_model, best_params
+
+def plot_ts_multivariate_chart(data: DataFrame, title: str) -> list[Axes]:
+    fig: Figure
+    axs: list[Axes]
+    fig, axs = subplots(data.shape[1], 1, figsize=(3 * HEIGHT, HEIGHT / 2 * data.shape[1]))
+    fig.suptitle(title)
+
+    for i in range(data.shape[1]):
+        col: str = data.columns[i]
+        plot_line_chart(
+            data[col].index.to_list(),
+            data[col].to_list(),
+            ax=axs[i],
+            xlabel=data.index.name,
+            ylabel=col,
+        )
+    return axs
