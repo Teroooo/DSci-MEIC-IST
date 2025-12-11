@@ -1,0 +1,25 @@
+Aggregation
+------------------
+% Approach 1: Hourly Aggregation
+% Approach 2: Daily Aggregation
+% Approach 3: Weekly Aggregation
+% Approach 4: 30min Aggregation  <-- !!
+% Approach 5: 15min Aggregation  
+
+------------------
+Smoothing
+------------------
+
+% Smoothing Sizes: 3,5,10,15
+
+% Approach 1: Smoothing Sizes: 3
+% Approach 2: Smoothing Sizes: 5
+% Approach 4: Smoothing Sizes: 10  <-- !!
+% Approach 3: Smoothing Sizes: 15
+
+------------------
+Differentiation
+------------------
+% Approach 1: No differentiation   <-- !!
+% Approach 2: First differentiation
+% Approach 3: Second differentiation
