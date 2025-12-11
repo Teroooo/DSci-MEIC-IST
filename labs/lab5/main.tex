@@ -74,104 +74,93 @@
 \section{DATA PROFILING}
 
 \subsection*{\textit{Data Dimensionality and Granularity}}
-\ctext[RGB]{190,190,190}{May be used to identify the most atomic granularity and two other different granularities to consider.  \textbf{Shall not exceed 500 characters.}}
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
+\centering\includegraphics[width=0.8\textwidth]{dimensionality/traffic_record.png}
 \caption{Time series 1 at the most granular detail}
 \end{figure}
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
+\centering\includegraphics[width=0.8\textwidth]{dimensionality/traffic_daily.png}
 \caption{Time series 1 at the second chosen granularity}
 \end{figure}
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
+\centering\includegraphics[width=0.8\textwidth]{dimensionality/traffic_weekly.png}
 \caption{Time series 1 at the third chosen granularity}
 \end{figure}
 
-\begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Time series 2 at the most granular detail}
-\end{figure}
-
-\begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Time series 2 at the second chosen granularity}
-\end{figure}
-
-\begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Time series 2 at the third chosen granularity}
-\end{figure}
-
 \subsection*{\textit{Data Distribution}}
-\ctext[RGB]{190,190,190}{Shall be used to perform the data analysis at those three different granularities, concerning the series distribution.  \textbf{Shall not exceed 500 characters.}}
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
+\centering\includegraphics[width=0.8\textwidth]{data_distribution/5number_summary.png}
 \caption{Boxplot(s) for time series 1}
 \end{figure}
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Boxplot(s) for time series 2}
-\end{figure}
-
-\begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
+\centering\includegraphics[width=0.8\textwidth]{data_distribution/distributions.png}
 \caption{Histogram(s) for time series 1}
 \end{figure}
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Histogram(s) for time series 2}
-\end{figure}
-
-\begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
+\centering\includegraphics[width=0.8\textwidth]{data_distribution/lagged_series.png}
 \caption{Autocorrelation lag-plots for original time series 1}
 \end{figure}
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Autocorrelation lag-plots for original time series 2}
-\end{figure}
-
-\begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
+\centering\includegraphics[width=0.8\textwidth]{data_distribution/autocorrelation_study.png}
 \caption{Autocorrelation correlogram for original time series 1}
 \end{figure}
 
-\begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Autocorrelation correlogram for original time series 2}
-\end{figure}
-
 \subsection*{\textit{Data Stationarity}}
-\ctext[RGB]{190,190,190}{Shall be used to perform the data analysis at those three different granularities, concerning the series stationarity.  \textbf{Shall not exceed 300 characters.}}
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
+\centering\includegraphics[width=0.8\textwidth]{data_stationarity/components_daily.png}
 \caption{Components study for time series 1}
 \end{figure}
 
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
+\centering\includegraphics[width=0.8\textwidth]{data_stationarity/stationarity_overall_mean.png}
 \caption{Stationarity study for time series 1}
 \end{figure}
 
+\subsection*{\textit{Augmented Dickey-Fuller Test Results:}}
+
+\textit{Original (15-min):}
+\begin{itemize}
+    \item ADF Statistic: -14.441
+    \item p-value: 0.000
+    \item Critical Values: 1\%: -3.431, 5\%: -2.862, 10\%: -2.567
+    \item \textbf{The series IS stationary}
+\end{itemize}
+
+\textit{Hourly:}
+\begin{itemize}
+    \item ADF Statistic: -8.903
+    \item p-value: 0.000
+    \item Critical Values: 1\%: -3.435, 5\%: -2.864, 10\%: -2.568
+    \item \textbf{The series IS stationary}
+\end{itemize}
+
+\textit{Daily:}
+\begin{itemize}
+    \item ADF Statistic: -0.826
+    \item p-value: 0.811
+    \item Critical Values: 1\%: -3.548, 5\%: -2.913, 10\%: -2.594
+    \item \textbf{The series IS NOT stationary}
+\end{itemize}
+
+\subsection*{\textit{Deployment}}
+
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Components study for time series 2}
+\centering\includegraphics[width=0.8\textwidth]{deploy/diagram.jpeg}
+\caption{Architecture diagram}
 \end{figure}
 
-
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Stationarity study for time series 2}
+\centering\includegraphics[width=0.8\textwidth]{deploy/file_structure.jpeg}
+\caption{File formats}
 \end{figure}
 
 \end{document}
