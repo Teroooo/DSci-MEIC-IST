@@ -1,0 +1,168 @@
+\documentclass[10pt]{extarticle}
+\renewcommand{\arraystretch}{1.5}
+\renewcommand{\baselinestretch}{1.5}
+\usepackage[onehalfspacing]{setspace}
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0.2em}
+\font\myfont=cmr12 at 26pt
+\usepackage{anyfontsize}
+\usepackage{tabularx}
+\usepackage{multirow}
+\pagenumbering{arabic} 
+\usepackage{soul}
+\usepackage{xcolor}
+\usepackage[T1]{fontenc}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{blindtext}
+\usepackage{titling}
+\setlength{\droptitle}{-14em}   % This is your set screw
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{eso-pic}
+\graphicspath{ {./images/} }
+\usepackage{subcaption}
+\usepackage{geometry}
+\usepackage[section]{placeins}
+\geometry{margin=2cm, bmargin=2cm, tmargin=3cm}
+
+\newcommand{\ctext}[3][RGB]{%
+  \begingroup
+  \definecolor{hlcolor}{#1}{#2}\sethlcolor{hlcolor}%
+  \hl{#3}%
+  \endgroup
+}
+
+
+\begin{document}
+
+
+\AddToShipoutPictureBG*{
+\AtPageUpperLeft{
+\hspace{19.5cm}
+\raisebox{-2.5cm}{\makebox[0pt][r]{\fontsize{36}{1cm}\selectfont DS 2025\par}}}}
+
+\AddToShipoutPictureBG*{
+\AtPageUpperLeft{
+\hspace{6.5cm}
+\raisebox{-3.5cm}{
+\makebox[0pt][r]{ 
+\includegraphics[scale=0.95]{tecnico_logo.jpg}\\[3cm]}}}}
+
+\title{{\myfont Data Science Project}}  % Title
+\setlength{\droptitle}{1cm}
+
+\date{\vspace{12ex}} % Date for the report, skipped and used to adjust height
+\maketitle % Insert the title, author and date
+\begin{center}
+    %\setlength\extrarowheight{7pt}
+    \begin{tabular}{ |l|l l|l| }
+        \hline
+        \multirow{4}{6em}{\textbf{Team nr: } 16} & \textbf{Student 1: } Antero Morgado & \textbf{IST nr: } 1119213\\
+        & \textbf{Student 2: } David Ferreira & \textbf{IST nr:} 1107077 \\
+        & \textbf{Student 3: } José Fernandes & \textbf{IST nr: } 1103727 \\
+        & \textbf{Student 4: } Olha Buts & \textbf{IST nr: } 1116276 \\
+        \hline
+    \end{tabular}
+\end{center}
+
+\begin{center}
+\section*{\fontsize{0.75cm}{1cm}\selectfont FORECASTING MODELS}
+\end{center}
+
+\section{Exponential Smoothing}
+
+\subsection{Hyperparameters study over data}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{exponcialSmoothing/traffic_exponential_smoothing_R2_study_15 (1).png} 
+\caption{R² as a function of alpha for Exponential Smoothing}
+\end{figure}
+
+\subsection{Best model’s performance}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{exponcialSmoothing/traffic_exponential_smoothing_R2_eval_15.png} 
+\caption{Best model's performance metrics (RMSE, MAE, MAPE, R²)}
+\end{figure}
+
+\subsection{Best model’s predictions over the testing dataset after transformation}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{exponcialSmoothing/traffic_exponential_smoothing_R2_forecast_15.png} 
+\caption{Predictions (red) vs actual test data (blue) for best Exponential Smoothing model}
+\end{figure}
+
+\section{Multi-layer Perceptrons}
+
+\subsection{Hyperparameters study over data}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{Multi-layerPerceptrons/traffic_mlp_R2_study.png} 
+\caption{R² convergence for different MLP hidden layer configurations}
+\end{figure}
+
+\subsection{Best model’s performance}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{Multi-layerPerceptrons/traffic_mlp_R2_eval.png} 
+\caption{Best model's performance metrics (RMSE, MAE, MAPE, R²)}
+\end{figure}
+
+\subsection{Best model’s predictions over the testing dataset after transformation}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{Multi-layerPerceptrons/traffic_mlp_R2_forecast.png} 
+\caption{Predictions (red) vs actual test data (blue) for best MLP model}
+\end{figure}
+
+\section{ARIMA}
+
+\subsection{Hyperparameters study over data}
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{ARIMA/traffic_arima_R2_study.png}
+\caption{ARIMA hyperparameters study: best configuration (p=5, d=1, q=7)}
+\end{figure}
+
+\subsection{Best model’s performance}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{ARIMA/traffic_arima_R2_eval_15.png} 
+\caption{Best model's performance metrics (RMSE, MAE, MAPE, R²)}
+\end{figure}
+
+\subsection{Best model’s predictions over the testing dataset after transformation}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{ARIMA/traffic_arima_R2_forecast_15.png}
+\caption{Predictions (red) vs actual test data (blue) for best ARIMA model}
+\end{figure}
+
+\section{LSTMs}
+
+\subsection{Hyperparameters study over data}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{LSTM/Screenshot 2025-12-18 214052.png}
+\caption{LSTM hyperparameters study: best configuration found (sequence length=4, hidden=25, epochs=2100)}
+\end{figure}
+
+
+\subsection{Best model’s performance}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{LSTM/traffic_lstms_R2_eval (1).png}
+\caption{Best model's performance metrics (RMSE, MAE, MAPE, R²)}
+\end{figure}
+
+\subsection{Best model’s predictions over the testing dataset after transformation}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{LSTM/traffic_lstms_R2_forecast_15.png}
+\caption{Predictions (red) vs actual test data (blue) for best LSTM model}
+\end{figure}
+
+\end{document}
