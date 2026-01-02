@@ -53,6 +53,65 @@ ordinal_mappings = {
     },
 }
 
+# Primary Contributory Cause ordered by perceived danger (low → high)
+prim_contributory_cause_risk_map = {
+    # Lowest / unknown applicability
+    "NOT APPLICABLE": 1,
+    "UNABLE TO DETERMINE": 2,
+    "RELATED TO BUS STOP": 3,
+    "OBSTRUCTED CROSSWALKS": 4,
+
+    # External factors and environment
+    "ANIMAL": 5,
+    "EVASIVE ACTION DUE TO ANIMAL, OBJECT, NONMOTORIST": 6,
+    "WEATHER": 7,
+    "VISION OBSCURED (SIGNS, TREE LIMBS, BUILDINGS, ETC.)": 8,
+    "EQUIPMENT - VEHICLE CONDITION": 9,
+    "ROAD CONSTRUCTION/MAINTENANCE": 10,
+    "ROAD ENGINEERING/SURFACE/MARKING DEFECTS": 11,
+
+    # Driver condition/skill
+    "PHYSICAL CONDITION OF DRIVER": 12,
+    "DRIVING SKILLS/KNOWLEDGE/EXPERIENCE": 13,
+
+    # Generally lower-risk infractions
+    "TURNING RIGHT ON RED": 14,
+    "BICYCLE ADVANCING LEGALLY ON RED LIGHT": 15,
+    "MOTORCYCLE ADVANCING LEGALLY ON RED LIGHT": 16,
+    "IMPROPER BACKING": 17,
+    "IMPROPER TURNING/NO SIGNAL": 18,
+    "IMPROPER LANE USAGE": 19,
+    "IMPROPER OVERTAKING/PASSING": 20,
+    "FOLLOWING TOO CLOSELY": 21,
+    "FAILING TO YIELD RIGHT-OF-WAY": 22,
+
+    # Sign/marking violations
+    "DISREGARDING ROAD MARKINGS": 23,
+    "DISREGARDING OTHER TRAFFIC SIGNS": 24,
+    "DISREGARDING YIELD SIGN": 25,
+    "DISREGARDING STOP SIGN": 26,
+    "DISREGARDING TRAFFIC SIGNALS": 27,
+
+    # Distractions
+    "CELL PHONE USE OTHER THAN TEXTING": 28,
+    "DISTRACTION - FROM OUTSIDE VEHICLE": 29,
+    "DISTRACTION - FROM INSIDE VEHICLE": 30,
+    "DISTRACTION - OTHER ELECTRONIC DEVICE (NAVIGATION DEVICE, DVD PLAYER, ETC.)": 31,
+    "TEXTING": 32,
+
+    # Speed and aggressive behavior
+    "FAILING TO REDUCE SPEED TO AVOID CRASH": 33,
+    "EXCEEDING SAFE SPEED FOR CONDITIONS": 34,
+    "EXCEEDING AUTHORIZED SPEED LIMIT": 35,
+    "OPERATING VEHICLE IN ERRATIC, RECKLESS, CARELESS, NEGLIGENT OR AGGRESSIVE MANNER": 36,
+
+    # Very high-risk behaviors
+    "PASSING STOPPED SCHOOL BUS": 37,
+    "DRIVING ON WRONG SIDE/WRONG WAY": 38,
+    "HAD BEEN DRINKING (USE WHEN ARREST IS NOT MADE)": 39,
+    "UNDER THE INFLUENCE OF ALCOHOL/DRUGS (USE WHEN ARREST IS EFFECTED)": 40,
+}
+
 # Columns to drop entirely
 DROP_COLS = [
     "most_severe_injury",
@@ -113,84 +172,127 @@ def categorize_prim_cause(val):
     else:
         return "Other"
 
+
+"""
+Weather conditions were grouped and ordered by perceived crash dangerousness. Clear and overcast conditions represent minimal risk. Precipitation, visibility loss, wind, and winter conditions progressively increase crash likelihood and severity. Each category receives a unique ordinal value while preserving the risk-based ordering.
+"""
 weather_risk_map = {
-    "CLEAR": 0,
-    "CLOUDY/OVERCAST": 0,
-    "RAIN": 1,
-    "OTHER": 1,
-    "FOG/SMOKE/HAZE": 2,
-    "BLOWING SAND, SOIL, DIRT": 2,
-    "SEVERE CROSS WIND GATE": 2,
-    "SNOW": 3,
-    "SLEET/HAIL": 3,
-    "BLOWING SNOW": 4,
-    "FREEZING RAIN/DRIZZLE": 4,
+    # Lowest perceived crash danger
+    "CLEAR": 1,
+    "CLOUDY/OVERCAST": 2,
+
+    # Low–moderate perceived crash danger
+    "RAIN": 3,
+    "OTHER": 4,
+
+    # Moderate perceived crash danger
+    "FOG/SMOKE/HAZE": 5,
+    "BLOWING SAND, SOIL, DIRT": 6,
+    "SEVERE CROSS WIND GATE": 7,
+
+    # High perceived crash danger
+    "SNOW": 8,
+    "SLEET/HAIL": 9,
+
+    # Highest perceived crash danger
+    "BLOWING SNOW": 10,
+    "FREEZING RAIN/DRIZZLE": 11,
 }
 
+"""
+Trafficway types were grouped and ordered by perceived crash dangerousness. Limited-access and low-speed areas rank lowest. Mid-level values reflect standard road configurations with moderate conflict points. Highest values correspond to intersections and complex geometries with increased conflict density. Each category is assigned a unique ordinal value while preserving this risk-based ordering.
+"""
 trafficway_danger_map = {
-    "ALLEY": 0,
-    "DRIVEWAY": 0,
-    "PARKING LOT": 0,
-    "DIVIDED - W/MEDIAN BARRIER": 1,
-    "ONE-WAY": 1,
-    "RAMP": 1,
-    "NOT DIVIDED": 2,
-    "TRAFFIC ROUTE": 2,
-    "CENTER TURN LANE": 2,
-    "DIVIDED - W/MEDIAN (NOT RAISED)": 2,
-    "NOT REPORTED": 2,
-    "UNKNOWN": 2,
-    "UNKNOWN INTERSECTION TYPE": 2,
-    "OTHER": 2,
-    "FOUR WAY": 3,
-    "T-INTERSECTION": 3,
-    "Y-INTERSECTION": 3,
-    "L-INTERSECTION": 3,
-    "FIVE POINT, OR MORE": 3,
-    "ROUNDABOUT": 3,
+    # Lowest perceived crash danger
+    "ALLEY": 1,
+    "DRIVEWAY": 2,
+    "PARKING LOT": 3,
+
+    # Low–moderate perceived crash danger
+    "DIVIDED - W/MEDIAN BARRIER": 4,
+    "ONE-WAY": 5,
+    "RAMP": 6,
+
+    # Moderate perceived crash danger
+    "NOT DIVIDED": 7,
+    "TRAFFIC ROUTE": 8,
+    "CENTER TURN LANE": 9,
+    "DIVIDED - W/MEDIAN (NOT RAISED)": 10,
+    "NOT REPORTED": 11,
+    "UNKNOWN": 12,
+    "UNKNOWN INTERSECTION TYPE": 13,
+    "OTHER": 14,
+
+    # High perceived crash danger
+    "FOUR WAY": 15,
+    "T-INTERSECTION": 16,
+    "Y-INTERSECTION": 17,
+    "L-INTERSECTION": 18,
+    "FIVE POINT, OR MORE": 19,
+    "ROUNDABOUT": 20,
 }
 
+"""
+Crash types were grouped and ordered by perceived severity based on typical impact forces and injury risk. Minor contact and low-energy collisions rank lowest. Multi-directional impacts and fixed objects increase severity. Head-on, overturning, train, and vulnerable road user crashes represent the highest severity. Unique ordinal values preserve this risk-based ordering.
+"""
 crash_severity_map = {
-    "SIDESWIPE SAME DIRECTION": 0,
-    "PARKED MOTOR VEHICLE": 0,
-    "REAR TO REAR": 0,
-    "OTHER OBJECT": 0,
-    "REAR END": 1,
-    "REAR TO FRONT": 1,
-    "REAR TO SIDE": 1,
-    "ANIMAL": 1,
-    "OTHER NONCOLLISION": 1,
-    "TURNING": 2,
-    "ANGLE": 2,
-    "FIXED OBJECT": 2,
-    "SIDESWIPE OPPOSITE DIRECTION": 3,
-    "HEAD ON": 4,
-    "OVERTURNED": 4,
-    "TRAIN": 4,
-    "PEDESTRIAN": 4,
-    "PEDALCYCLIST": 4,
+    # Lowest perceived crash severity
+    "SIDESWIPE SAME DIRECTION": 1,
+    "PARKED MOTOR VEHICLE": 2,
+    "REAR TO REAR": 3,
+    "OTHER OBJECT": 4,
+
+    # Low–moderate perceived crash severity
+    "REAR END": 5,
+    "REAR TO FRONT": 6,
+    "REAR TO SIDE": 7,
+    "ANIMAL": 8,
+    "OTHER NONCOLLISION": 9,
+
+    # Moderate perceived crash severity
+    "TURNING": 10,
+    "ANGLE": 11,
+    "FIXED OBJECT": 12,
+
+    # High perceived crash severity
+    "SIDESWIPE OPPOSITE DIRECTION": 13,
+
+    # Highest perceived crash severity
+    "HEAD ON": 14,
+    "OVERTURNED": 15,
+    "TRAIN": 16,
+    "PEDESTRIAN": 17,
+    "PEDALCYCLIST": 18,
 }
 
+
+"""
+Traffic control devices were grouped and ordered by perceived crash dangerousness. Lower values correspond to passive or advisory controls. Higher values correspond to active controls and railroad interactions where crash risk and severity are typically higher. The final encoding preserves this ordering while assigning a unique level to each device.
+"""
 traffic_control_device_group_map = {
-    # Level 1
+    # Lower perceived crash danger
     "OTHER WARNING SIGN": 1,
-    "OTHER REG. SIGN": 1,
-    "NO PASSING": 1,
-    "BICYCLE CROSSING SIGN": 1,
-    "PEDESTRIAN CROSSING SIGN": 1,
-    "SCHOOL ZONE": 1,
-    # Level 2
-    "STOP SIGN/FLASHER": 2,
-    "YIELD": 2,
-    # Level 3
-    "TRAFFIC SIGNAL": 3,
-    "FLASHING CONTROL SIGNAL": 3,
-    "POLICE/FLAGMAN": 3,
-    # Level 4
-    "RAILROAD CROSSING GATE": 4,
-    "RR CROSSING SIGN": 4,
-    "OTHER RAILROAD CROSSING": 4,
+    "OTHER REG. SIGN": 2,
+    "NO PASSING": 3,
+    "BICYCLE CROSSING SIGN": 4,
+    "PEDESTRIAN CROSSING SIGN": 5,
+    "SCHOOL ZONE": 6,
+
+    # Moderate perceived crash danger
+    "STOP SIGN/FLASHER": 7,
+    "YIELD": 8,
+
+    # High perceived crash danger
+    "TRAFFIC SIGNAL": 9,
+    "FLASHING CONTROL SIGNAL": 10,
+    "POLICE/FLAGMAN": 11,
+
+    # Highest perceived crash danger
+    "RAILROAD CROSSING GATE": 12,
+    "RR CROSSING SIGN": 13,
+    "OTHER RAILROAD CROSSING": 14,
 }
+
 
 def encode_cyclic_variables(df, cols):
     for c in cols:
@@ -217,8 +319,8 @@ def main():
     
     print(f"Data Split: {len(train_df)} Train rows, {len(test_df)} Test rows.")
 
-    # 3. No target encoding: columns formerly target-encoded will be one-hot encoded
-    print("Target encoding removed. Will one-hot encode high-cardinality categoricals.")
+    # 3. No one-hot encoding; all supported categoricals use ordinal/risk mappings
+    print("Target encoding removed. Using ordinal/risk mappings only.")
 
     # Helper function to apply all encodings
     def apply_encoding(dataset):
@@ -266,20 +368,22 @@ def main():
             data["first_crash_type"] = data["first_crash_type"].apply(lambda v: crash_severity_map.get(safe_upper(v), np.nan))
             data["first_crash_type"] = pd.to_numeric(data["first_crash_type"], errors='coerce')
 
-        # B5. Primary Contributory Cause -> grouped then one-hot
+        # B5. Primary Contributory Cause -> ordinal danger levels (numeric)
         if "prim_contributory_cause" in data.columns:
-            data["prim_contributory_cause_group"] = data["prim_contributory_cause"].apply(categorize_prim_cause)
-            data = data.drop(columns=["prim_contributory_cause"])  # drop original textual
+            data["prim_contributory_cause"] = data["prim_contributory_cause"].apply(
+                lambda v: prim_contributory_cause_risk_map.get(safe_upper(v), np.nan)
+            )
+            data["prim_contributory_cause"] = pd.to_numeric(data["prim_contributory_cause"], errors='coerce')
 
-        # B6. Traffic Control Device -> group levels then one-hot
+        # B6. Traffic Control Device -> group levels (numeric)
         if "traffic_control_device" in data.columns:
-            data["traffic_control_device_group"] = data["traffic_control_device"].apply(lambda v: traffic_control_device_group_map.get(safe_upper(v), "Other"))
+            data["traffic_control_device_group"] = data["traffic_control_device"].apply(
+                lambda v: traffic_control_device_group_map.get(safe_upper(v), np.nan)
+            )
+            data["traffic_control_device_group"] = pd.to_numeric(data["traffic_control_device_group"], errors='coerce')
             data = data.drop(columns=["traffic_control_device"])  # drop original textual
 
-        # B7. One-Hot for derived groups
-        oh_cols = [c for c in ["prim_contributory_cause_group", "traffic_control_device_group"] if c in data.columns]
-        if oh_cols:
-            data = pd.get_dummies(data, columns=oh_cols, dummy_na=False)
+        # No one-hot encoding applied; keep all derived groups as numeric
 
         # C. Cyclical Encoding
         data = encode_cyclic_variables(data, CYCLICAL)
