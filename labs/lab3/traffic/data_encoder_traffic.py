@@ -314,13 +314,10 @@ def main():
     
     # 2. Split Data (70% Train, 30% Test) BEFORE Encoding (prevents leakage)
     split_index = int(len(df) * 0.7)
-    train_df = df.iloc[:split_index].copy()
-    test_df = df.iloc[split_index:].copy()
+    train_df = df.iloc[:split_index].copy().reset_index(drop=True)
+    test_df = df.iloc[split_index:].copy().reset_index(drop=True)
     
     print(f"Data Split: {len(train_df)} Train rows, {len(test_df)} Test rows.")
-
-    # 3. No one-hot encoding; all supported categoricals use ordinal/risk mappings
-    print("Target encoding removed. Using ordinal/risk mappings only.")
 
     # Helper function to apply all encodings
     def apply_encoding(dataset):
