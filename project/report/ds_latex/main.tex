@@ -69,8 +69,6 @@
     \end{tabular}
 \end{center}
 
-\ctext[RGB]{190,190,190}{The present document presents a template for the Data Science Project report. It specifies the mandatory format and suggests the structure to follow. All text with grey background shall be replaced with the analysis made over the datasets. Put your charts in the \textit{images} folder, and set the name of the file in the \textit{includegraphics} command, after uncommenting it.} 
-
 \begin{center}
 	\section*{\fontsize{0.75cm}{1cm}\selectfont CLASSIFICATION}
 \end{center}
@@ -79,7 +77,8 @@
 \ctext[RGB]{190,190,190}{May be used to describe any useful observation about the data, and that was used in the current project. An example is the use of any domain knowledge to process the data or evaluate the results. \textbf{Shall not exceed 200 characters.}}
 
 \subsection*{\textit{Data Dimensionality}}
-\ctext[RGB]{190,190,190}{Shall contain all relevant information and charts respecting to the data dimensionality perspective, such as the number of records and number of dimensions, and their impact on the following analysis. \textbf{Shall not exceed 500 characters.}}
+
+Regarding the Missing Values analysis, the completeness metric for Dataset 1 was adjusted to treat 'UNKNOWN' occurrences as missing values.
 
 \begin{figure}[H]
 \centering
@@ -118,7 +117,8 @@
 \end{figure}
 
 \subsection*{\textit{Data Distribution}}
-\ctext[RGB]{190,190,190}{Shall contain all relevant information and charts respecting to the data distribution perspective, such as each variable distribution, type, domain and range. May be used to describe any useful observation about the data, and that was used in the current project.  \textbf{Shall not exceed 500 characters.}} 
+
+The distribution analysis reveals that the raw data is significantly dispersed, exhibiting high variance across several features. Certain variables show a clear lack of balance, with distributions heavily skewed toward specific classes or ranges and presence of evident outliers.
 
 \begin{figure}[H]
 \centering
@@ -173,114 +173,146 @@
 \end{figure}
 
 \subsection*{\textit{Data Granularity}}
-\ctext[RGB]{190,190,190}{Shall contain all relevant information and charts respecting to the data granularity perspective, such as the impact of different granularities considered for each variable. May present additional taxonomies if needed.  \textbf{Shall not exceed 500 characters.}}
+
+The granularity analysis highlights significant variability across variables in both datasets. Categorical features such as weather, lighting conditions, airline, and airport present low to medium granularity, while temporal and numerical variables (hour, delays, distance) show higher granularity and dispersion. These differences suggest the need for appropriate grouping or discretization strategies to avoid sparsity and improve downstream analysis and modeling.
 
 \begin{figure}[H]
 \centering
-\begin{subfigure}{0.24\textwidth}
+\begin{subfigure}{0.32\textwidth}
 \centering\includegraphics[width=\textwidth]{traffic_accidents/granularity/traffic_accidents_granularity_weather.png}
+\caption{Weather condition}
 \end{subfigure}
 \hfill
-\begin{subfigure}{0.24\textwidth}
+\begin{subfigure}{0.32\textwidth}
 \centering\includegraphics[width=\textwidth]{traffic_accidents/granularity/traffic_accidents_granularity_day.png}
+\caption{Day of week}
 \end{subfigure}
 \hfill
-\begin{subfigure}{0.24\textwidth}
+\begin{subfigure}{0.32\textwidth}
 \centering\includegraphics[width=\textwidth]{traffic_accidents/granularity/traffic_accidents_granularity_hour.png}
+\caption{Hour of day}
 \end{subfigure}
-\hfill
-\begin{subfigure}{0.24\textwidth}
+
+\vspace{0.2cm}
+
+\begin{subfigure}{0.32\textwidth}
 \centering\includegraphics[width=\textwidth]{traffic_accidents/granularity/traffic_accidents_granularity_month.png}
+\caption{Month}
 \end{subfigure}
-
-\vspace{0.2cm}
-
-\begin{subfigure}{0.24\textwidth}
+\hfill
+\begin{subfigure}{0.32\textwidth}
 \centering\includegraphics[width=\textwidth]{traffic_accidents/granularity/traffic_accidents_granularity_lighting.png}
+\caption{Lighting condition}
 \end{subfigure}
 \hfill
-\begin{subfigure}{0.24\textwidth}
+\begin{subfigure}{0.32\textwidth}
 \centering\includegraphics[width=\textwidth]{traffic_accidents/granularity/traffic_accidents_granularity_surface.png}
-\end{subfigure}
-\hfill
-\begin{subfigure}{0.24\textwidth}
-\centering\includegraphics[width=\textwidth]{traffic_accidents/granularity/traffic_accidents_granularity_trafficway.png}
-\end{subfigure}
-\hfill
-\begin{subfigure}{0.24\textwidth}
-\centering\includegraphics[width=\textwidth]{traffic_accidents/granularity/traffic_accidents_granularity_control.png}
+\caption{Roadway surface}
 \end{subfigure}
 
 \vspace{0.2cm}
 
-\begin{subfigure}{0.24\textwidth}
+\begin{subfigure}{0.32\textwidth}
+\centering\includegraphics[width=\textwidth]{traffic_accidents/granularity/traffic_accidents_granularity_trafficway.png}
+\caption{Trafficway type}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.32\textwidth}
+\centering\includegraphics[width=\textwidth]{traffic_accidents/granularity/traffic_accidents_granularity_control.png}
+\caption{Traffic control}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.32\textwidth}
 \centering\includegraphics[width=\textwidth]{traffic_accidents/granularity/traffic_accidents_granularity_crash_type.png}
+\caption{Crash type}
 \end{subfigure}
-\hfill
-\begin{subfigure}{0.24\textwidth}
+
+\vspace{0.2cm}
+
+\begin{subfigure}{0.32\textwidth}
 \centering\includegraphics[width=\textwidth]{traffic_accidents/granularity/traffic_accidents_granularity_damage.png}
+\caption{Damage level}
 \end{subfigure}
 \hfill
-\begin{subfigure}{0.24\textwidth}
+\begin{subfigure}{0.32\textwidth}
 \centering\includegraphics[width=\textwidth]{traffic_accidents/granularity/traffic_accidents_granularity_injury.png}
+\caption{Injury severity}
 \end{subfigure}
 \hfill
-\begin{subfigure}{0.24\textwidth}
+\begin{subfigure}{0.32\textwidth}
 \centering\includegraphics[width=\textwidth]{traffic_accidents/granularity/traffic_accidents_granularity_num_units.png}
+\caption{Number of units}
 \end{subfigure}
+
 \caption{Granularity analysis for dataset 1}
 \end{figure}
 
+
 \begin{figure}[H]
 \centering
-\begin{subfigure}{0.24\textwidth}
+\begin{subfigure}{0.32\textwidth}
 \centering\includegraphics[width=\textwidth]{Combined_Flights_2022/granularity/Combined_Flights_2022_granularity_airline.png}
+\caption{Airline}
 \end{subfigure}
 \hfill
-\begin{subfigure}{0.24\textwidth}
+\begin{subfigure}{0.32\textwidth}
 \centering\includegraphics[width=\textwidth]{Combined_Flights_2022/granularity/Combined_Flights_2022_granularity_origin.png}
+\caption{Origin airport}
 \end{subfigure}
 \hfill
-\begin{subfigure}{0.24\textwidth}
+\begin{subfigure}{0.32\textwidth}
 \centering\includegraphics[width=\textwidth]{Combined_Flights_2022/granularity/Combined_Flights_2022_granularity_destination.png}
+\caption{Destination airport}
 \end{subfigure}
-\hfill
-\begin{subfigure}{0.24\textwidth}
+
+\vspace{0.2cm}
+
+\begin{subfigure}{0.32\textwidth}
 \centering\includegraphics[width=\textwidth]{Combined_Flights_2022/granularity/Combined_Flights_2022_granularity_day.png}
+\caption{Day of week}
 \end{subfigure}
-
-\vspace{0.2cm}
-
-\begin{subfigure}{0.24\textwidth}
+\hfill
+\begin{subfigure}{0.32\textwidth}
 \centering\includegraphics[width=\textwidth]{Combined_Flights_2022/granularity/Combined_Flights_2022_granularity_month.png}
+\caption{Month}
 \end{subfigure}
 \hfill
-\begin{subfigure}{0.24\textwidth}
+\begin{subfigure}{0.32\textwidth}
 \centering\includegraphics[width=\textwidth]{Combined_Flights_2022/granularity/Combined_Flights_2022_granularity_dayofmonth.png}
-\end{subfigure}
-\hfill
-\begin{subfigure}{0.24\textwidth}
-\centering\includegraphics[width=\textwidth]{Combined_Flights_2022/granularity/Combined_Flights_2022_granularity_distance.png}
-\end{subfigure}
-\hfill
-\begin{subfigure}{0.24\textwidth}
-\centering\includegraphics[width=\textwidth]{Combined_Flights_2022/granularity/Combined_Flights_2022_granularity_airtime.png}
+\caption{Day of month}
 \end{subfigure}
 
 \vspace{0.2cm}
 
-\begin{subfigure}{0.24\textwidth}
-\centering\includegraphics[width=\textwidth]{Combined_Flights_2022/granularity/Combined_Flights_2022_granularity_dep_delay.png}
+\begin{subfigure}{0.32\textwidth}
+\centering\includegraphics[width=\textwidth]{Combined_Flights_2022/granularity/Combined_Flights_2022_granularity_distance.png}
+\caption{Distance}
 \end{subfigure}
 \hfill
-\begin{subfigure}{0.24\textwidth}
-\centering\includegraphics[width=\textwidth]{Combined_Flights_2022/granularity/Combined_Flights_2022_granularity_arr_delay.png}
+\begin{subfigure}{0.32\textwidth}
+\centering\includegraphics[width=\textwidth]{Combined_Flights_2022/granularity/Combined_Flights_2022_granularity_airtime.png}
+\caption{Air time}
 \end{subfigure}
+\hfill
+\begin{subfigure}{0.32\textwidth}
+\centering\includegraphics[width=\textwidth]{Combined_Flights_2022/granularity/Combined_Flights_2022_granularity_dep_delay.png}
+\caption{Departure delay}
+\end{subfigure}
+
+\vspace{0.2cm}
+
+\begin{subfigure}{0.32\textwidth}
+\centering\includegraphics[width=\textwidth]{Combined_Flights_2022/granularity/Combined_Flights_2022_granularity_arr_delay.png}
+\caption{Arrival delay}
+\end{subfigure}
+
 \caption{Granularity analysis for dataset 2}
 \end{figure}
 
+
 \subsection*{\textit{Data Sparsity}}
-\ctext[RGB]{190,190,190}{Shall contain all relevant information and charts respecting to the data sparsity perspective, such as domain coverage and correlation among variables.  \textbf{Shall not exceed 500 characters.}}
+
+The sparsity analysis reveals uneven domain coverage across variables, with several categorical features dominated by a small number of frequent values and many rare ones. Correlation analysis shows limited strong dependencies between most variables, indicating sparse relationships in the feature space.
 
 \begin{figure}[H]
   \centering\includegraphics[width=0.9\textwidth]{traffic_accidents/sparsity/traffic_accidents_sparsity_per_class_study.png}
@@ -729,7 +761,8 @@ A critical assessment of the best models shall be presented, clearly stating if 
 \section{DATA PROFILING}
 
 \subsection*{\textit{Data Dimensionality and Granularity}}
-\ctext[RGB]{190,190,190}{May be used to identify the most atomic granularity and two other different granularities to consider.  \textbf{Shall not exceed 500 characters.}}
+
+The time series was analyzed at three temporal granularities: 15-minute intervals (most atomic), daily aggregation, and weekly aggregation. The most granular level captures short-term variability and peaks, while daily and weekly granularities smooth fluctuations and highlight medium- and long-term trends.
 
 \begin{figure}[H]
   \centering\includegraphics[width=0.7\textwidth]{TrafficTwoMonth/dimensionality/traffic_record.png}
@@ -748,7 +781,8 @@ A critical assessment of the best models shall be presented, clearly stating if 
 
 
 \subsection*{\textit{Data Distribution}}
-\ctext[RGB]{190,190,190}{Shall be used to perform the data analysis at those three different granularities, concerning the series distribution.  \textbf{Shall not exceed 500 characters.}}
+
+The distribution analysis across granularities shows that aggregation reduces variability and outliers. The 15-minute series presents higher dispersion and skewness, while hourly and daily series exhibit smoother distributions. 
 
 \begin{figure}[H]
 \centering\includegraphics[width=0.8\textwidth]{TrafficTwoMonth/data_distribution/5number_summary.png}
@@ -771,7 +805,8 @@ A critical assessment of the best models shall be presented, clearly stating if 
 \end{figure}
 
 \subsection*{\textit{Data Stationarity}}
-\ctext[RGB]{190,190,190}{Shall be used to perform the data analysis at those three different granularities, concerning the series stationarity.  \textbf{Shall not exceed 300 characters.}}
+
+Stationarity analysis shows that the series is stationary at finer granularities but loses stationarity when aggregated daily. Augmented Dickey-Fuller Test confirm that trend components become more pronounced at coarser granularities, indicating the need for detrending or differencing when modeling aggregated series.
 
 \begin{figure}[H]
 \centering\includegraphics[width=0.8\textwidth]{TrafficTwoMonth/data_stationarity/components_daily.png}
@@ -935,13 +970,13 @@ A critical assessment of the best models shall be presented, clearly stating if 
 
 \begin{figure}[H]
 \centering
-\begin{subfigure}[b]{0.45\textwidth}
+\begin{subfigure}[b]{0.40\textwidth}
     \centering
     \includegraphics[width=\textwidth]{images/TrafficTwoMonth/data_transformation/Aggr/traffic_linear_regression_evaluation_No Aggregation.png}
     \caption{Linear Regression Evaluation – No Aggregation}
 \end{subfigure}
 \hfill
-\begin{subfigure}[b]{0.45\textwidth}
+\begin{subfigure}[b]{0.40\textwidth}
     \centering
     \includegraphics[width=\textwidth]{images/TrafficTwoMonth/data_transformation/Aggr/traffic_persistence_optim_eval_No Aggregation.png}
     \caption{Persistence Optim Evaluation – No Aggregation}
@@ -949,13 +984,13 @@ A critical assessment of the best models shall be presented, clearly stating if 
 
 \vspace{1em}
 
-\begin{subfigure}[b]{0.45\textwidth}
+\begin{subfigure}[b]{0.40\textwidth}
     \centering
     \includegraphics[width=\textwidth]{images/TrafficTwoMonth/data_transformation/Aggr/traffic_linear_regression_evaluation_30min Aggregation.png}
     \caption{Linear Regression Evaluation – 30min Aggregation}
 \end{subfigure}
 \hfill
-\begin{subfigure}[b]{0.45\textwidth}
+\begin{subfigure}[b]{0.40\textwidth}
     \centering
     \includegraphics[width=\textwidth]{images/TrafficTwoMonth/data_transformation/Aggr/traffic_persistence_optim_eval_30min Aggregation.png}
     \caption{Persistence Optim Evaluation – 30min Aggregation}
@@ -963,13 +998,13 @@ A critical assessment of the best models shall be presented, clearly stating if 
 
 \vspace{1em}
 
-\begin{subfigure}[b]{0.45\textwidth}
+\begin{subfigure}[b]{0.40\textwidth}
     \centering
     \includegraphics[width=\textwidth]{images/TrafficTwoMonth/data_transformation/Aggr/traffic_linear_regression_evaluation_Hourly Aggregation.png}
     \caption{Linear Regression Evaluation – Hourly Aggregation}
 \end{subfigure}
 \hfill
-\begin{subfigure}[b]{0.45\textwidth}
+\begin{subfigure}[b]{0.40\textwidth}
     \centering
     \includegraphics[width=\textwidth]{images/TrafficTwoMonth/data_transformation/Aggr/traffic_persistence_optim_eval_Hourly Aggregation.png}
     \caption{Persistence Optim Evaluation – Hourly Aggregation}
@@ -977,13 +1012,13 @@ A critical assessment of the best models shall be presented, clearly stating if 
 
 \vspace{1em}
 
-\begin{subfigure}[b]{0.45\textwidth}
+\begin{subfigure}[b]{0.40\textwidth}
     \centering
     \includegraphics[width=\textwidth]{images/TrafficTwoMonth/data_transformation/Aggr/traffic_linear_regression_evaluation_Daily Aggregation.png}
     \caption{Linear Regression Evaluation – Daily Aggregation}
 \end{subfigure}
 \hfill
-\begin{subfigure}[b]{0.45\textwidth}
+\begin{subfigure}[b]{0.40\textwidth}
     \centering
     \includegraphics[width=\textwidth]{images/TrafficTwoMonth/data_transformation/Aggr/traffic_persistence_optim_eval_Daily Aggregation.png}
     \caption{Persistence Optim Evaluation – Daily Aggregation}
@@ -991,13 +1026,13 @@ A critical assessment of the best models shall be presented, clearly stating if 
 
 \vspace{1em}
 
-\begin{subfigure}[b]{0.45\textwidth}
+\begin{subfigure}[b]{0.40\textwidth}
     \centering
     \includegraphics[width=\textwidth]{images/TrafficTwoMonth/data_transformation/Aggr/traffic_linear_regression_evaluation_Weekly Aggregation.png}
     \caption{Linear Regression Evaluation – Weekly Aggregation}
 \end{subfigure}
 \hfill
-\begin{subfigure}[b]{0.45\textwidth}
+\begin{subfigure}[b]{0.40\textwidth}
     \centering
     \includegraphics[width=\textwidth]{images/TrafficTwoMonth/data_transformation/Aggr/traffic_persistence_optim_eval_Weekly Aggregation.png}
     \caption{Persistence Optim Evaluation – Weekly Aggregation}
@@ -1194,7 +1229,7 @@ A critical assessment of the best models shall be presented, clearly stating if 
     \label{fig:diff:second}
 \end{subfigure}
 
-\caption{Time series plots after applying zero, first, and second differentiation}
+\caption{Time series plots without and after applying first, and second differentiation}
 \label{fig:differentiation_plots}
 \end{figure}
 
