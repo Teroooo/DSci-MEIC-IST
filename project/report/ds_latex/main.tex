@@ -849,7 +849,8 @@ Stationarity analysis shows that the series is stationary at finer granularities
 \section{DATA TRANSFORMATION}
 
 \subsection*{\textit{Aggregation}}
-\ctext[RGB]{190,190,190}{Shall describe the results of applying three different aggregations over both datasets, and identifying the granularity chosen to proceed.  \textbf{Shall not exceed 300 characters.}}
+
+We tested 30‑minute, hourly, daily, and weekly aggregations to see how each level reduces noise and how much detail is lost.The plots (see Figures \ref{fig:aggregation_plots}, \ref{fig:forecasting_plots}, and \ref{fig:evaluation_results}) reveal that no aggregation keeps high‑frequency noise, while daily and weekly levels smooth the data too much.On the test set, linear regression produced constant predictions with R² close to 0, signaling a poor fit to the data.Meanwhile, the optimistic persistence model performed better, and the 30‑minute level gave the best R² (~0.67), so we chose it.
 
 \begin{figure}[H]
 \centering
@@ -1043,7 +1044,7 @@ Stationarity analysis shows that the series is stationary at finer granularities
 \end{figure}
 
 \subsection*{\textit{Smoothing}}
-\ctext[RGB]{190,190,190}{Shall describe the results of applying smoothing transformations over both datasets, and identifying the best result to proceed.  \textbf{Shall not exceed 300 characters.}}
+We tested moving-average smoothing with window sizes of 3, 5, 10, and 15 to see how noise reduction affects forecasting without distorting the data.Smaller windows kept more noise, while larger ones over-smoothed.The window of 15 worked best, giving RMSE ~0.3, MAE ~0.25, and R² ~0.96 in the optimistic persistence model.Linear regression stayed flat with low R², so we chose size 15.
 
 \begin{figure}[H]
 \centering
@@ -1202,7 +1203,7 @@ Stationarity analysis shows that the series is stationary at finer granularities
 \end{figure}
 
 \subsection*{\textit{Differentiation}}
-\ctext[RGB]{190,190,190}{Shall describe the results of applying two consecutive differentiation of both datasets, and identifying the best result to proceed.  \textbf{Shall not exceed 300 characters.}}
+To handle possible non‑stationarity, we tested no differencing, first‑order, and second‑order differencing.No differencing kept the trend, first‑order removed linear trends and centered the data, and second‑order added noise without helping.The optimistic persistence model performed best with no differencing, reaching R² ~0.95.Linear regression improved only slightly, so we chose no differencing.
 
 \begin{figure}[H]
 \centering
@@ -1237,7 +1238,7 @@ Stationarity analysis shows that the series is stationary at finer granularities
 \centering
 \begin{subfigure}[b]{0.45\textwidth}
     \centering
-    \includegraphics[width=\textwidth]{images/TrafficTwoMonth/data_transformation/Diff/traffic_linear_regression_forecast_No Differentiation.png}
+    \includegraphics[width=\textwidth]{images/TrafficTwoMonth/data_transformation/Diff/traffic_linear_regression_forecast_No_Differentiation.png}
     \caption{Linear Regression – No Differentiation}
 \end{subfigure}
 \hfill
@@ -1326,8 +1327,7 @@ Stationarity analysis shows that the series is stationary at finer granularities
 \end{figure}
 
 \subsection*{\textit{Scaling}}
-\ctext[RGB]{190,190,190}{Shall describe the results of applying other transformations over both datasets, and identifying the best result to proceed.  \textbf{Shall not exceed 500 characters.}}
-
+We used StandardScaler to normalize the data, converting it to a mean of 0 and a standard deviation of 1.Before scaling, the values ranged from about 25 to 250 with high variance; after scaling, they fell roughly between –1 and 3.This improved model stability,and sped up convergence as shown in the before‑and‑after plots.We did not test other scaling methods because StandardScaler solved the scale issues without adding complexity.The final preparation pipeline for the traffic dataset is: 30‑minute aggregation, smoothing with window size 15, no differencing, and scaling with StandardScaler.
 
 \begin{figure}[H]
 \centering
@@ -1346,36 +1346,38 @@ Stationarity analysis shows that the series is stationary at finer granularities
 \end{figure}
 
 \section{MODELS' EVALUATION}
-\ctext[RGB]{190,190,190}{Shall be used to summarise the transformations done over the original time series.  \textbf{Shall not exceed 500 characters.}}
 
-\subsection*{\textit{Exponential Smoothing Model}}
-\textit{Exponential Smoothing was applied with varying smoothing parameter alpha. The hyperparameter study identified the optimal alpha that maximises R² on the validation set. The best model achieves solid performance on the test set, with predictions closely following the actual traffic patterns after the selected data transformations.} 
-\textbf{(312 characters)}
+\subsection*{Exponential Smoothing Model}
+
+We applied simple exponential smoothing and tuned alpha from 0.1 to 0.9. The hyperparameter study (Figure~\ref{fig:exp_study}) shows R² starts near 0.0 at alpha = 0.1 and drops sharply to ~–1.0 by alpha = 0.3, indicating the model overreacts to recent changes.
+
+The forecast (Figure \ref{fig:exp_forecast}) follows the overall trend but smooths out sharp variations. The evaluation (Figure~\ref{fig:exp_eval}) shows poor test performance: RMSE $\approx$ 0.24, MAE $\approx$ 0.20, MAPE $\approx$ 100\%, R² $\approx$ --0.01, revealing weak accuracy and poor generalization.
+
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{images/TrafficTwoMonth/models_evalution/exponcialSmoothing/traffic_exponential_smoothing_R2_study_15 (1).png}
+\includegraphics[width=0.5\textwidth]{images/TrafficTwoMonth/models_evalution/exponcialSmoothing/traffic_exponential_smoothing_R2_study_30.png}
 \caption{Hyperparameter study: R² as a function of alpha for Exponential Smoothing}
 \label{fig:exp_study}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.9\textwidth]{images/TrafficTwoMonth/models_evalution/exponcialSmoothing/traffic_exponential_smoothing_R2_forecast_15.png}
+\includegraphics[width=0.9\textwidth]{images/TrafficTwoMonth/models_evalution/exponcialSmoothing/traffic_exponential_smoothing_R2_forecast_30.png}
 \caption{Forecasting plots obtained with the best Exponential Smoothing model (predictions in red vs actual test data in pink)}
 \label{fig:exp_forecast}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{images/TrafficTwoMonth/models_evalution/exponcialSmoothing/traffic_exponential_smoothing_R2_eval_15.png}
+\includegraphics[width=0.8\textwidth]{images/TrafficTwoMonth/models_evalution/exponcialSmoothing/traffic_exponential_smoothing_R2_eval_30.png}
 \caption{Performance metrics of the best Exponential Smoothing model (RMSE, MAE, MAPE, R²)}
 \label{fig:exp_eval}
 \end{figure}
 
-\subsection*{\textit{Multi-layer Perceptrons Model}}
-\textit{A Multi-layer Perceptron (MLP) was trained with different hidden layer configurations. The hyperparameter search showed convergence of R² across architectures. The selected model provides competitive forecasting accuracy on the transformed traffic time series.} 
-\textbf{(278 characters)}
+\subsection*{Multi-layer Perceptrons Model}
+
+For the MLP model, we explored various hidden layer architectures, including single layers with 50 or 100 neurons, and multi-layers such as (50, 50) and (100, 50), trained with the Adam optimizer and MSE loss.The best setup was (50, 50), reaching test R² $\approx 0.86$ after $\sim$800 epochs with stable training and no overfitting.The forecasting plot (Figure~\ref{fig:mlp_forecast}) closely matched the test data, capturing nonlinear patterns better than simpler models.Performance metrics (Figure~\ref{fig:mlp_eval}) show RMSE $\approx 0.25$, MAE $\approx 0.20$, MAPE $\approx 18\%$, and R² $\approx 0.86$, confirming solid medium-term performance despite higher computational cost.
 
 \begin{figure}[H]
 \centering
@@ -1398,10 +1400,9 @@ Stationarity analysis shows that the series is stationary at finer granularities
 \label{fig:mlp_eval}
 \end{figure}
 
-\subsection*{\textit{ARIMA Model}}
-\textit{ARIMA models were evaluated through a grid search over orders (p,d,q). The best univariate configuration (p=5, d=1, q=7) was identified using validation performance. The model captures the stationary patterns effectively after differentiation, delivering reliable short-term forecasts on the traffic series.} 
-\textbf{(298 characters)}
+\subsection*{ARIMA Model}
 
+We ran a grid search for ARIMA with p and q from 0 to 8 and d from 0 to 2.The study (Figure \ref{fig:arima_study}) highlights the optimal univariate configuration as p=5, d=1, q=7.ARIMA fit training data well (R² $\approx$ 0.85) but dropped on test (R² $\approx$ 0.08), with RMSE rising from 0.08 to 0.21 (Figure \ref{fig:arima_eval}). VAR with lag=4 showed more stable training (R² $\approx$ 0.82) but also weak test performance (R² $\approx$ 0.06) (Figure \ref{fig:var_eval}).Both models captured trends but failed on sharp changes, with high MAPE (~100\%) and limited generalization. (Figure \ref{fig:arima_forecast})
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.7\textwidth]{images/TrafficTwoMonth/models_evalution/ARIMA/traffic_arima_R2_study.png}
@@ -1411,21 +1412,43 @@ Stationarity analysis shows that the series is stationary at finer granularities
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.9\textwidth]{images/TrafficTwoMonth/models_evalution/ARIMA/traffic_arima_R2_forecast_15.png}
+\includegraphics[width=0.9\textwidth]{images/TrafficTwoMonth/models_evalution/ARIMA/traffic_arima_R2_forecast_30.png}
 \caption{Forecasting plots obtained with the best ARIMA model (predictions in red vs actual test data in pink) – univariate}
 \label{fig:arima_forecast}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.8\textwidth]{images/TrafficTwoMonth/models_evalution/ARIMA/traffic_arima_R2_eval_15.png}
+\includegraphics[width=0.8\textwidth]{images/TrafficTwoMonth/models_evalution/ARIMA/traffic_arima_R2_eval_30.png}
 \caption{Performance metrics of the best ARIMA model (RMSE, MAE, MAPE, R²) – univariate}
 \label{fig:arima_eval}
 \end{figure}
 
-\subsection*{\textit{LSTMs Model}}
-\textit{Long Short-Term Memory networks were tuned over sequence length, hidden units, and training epochs. The optimal configuration (sequence length=4, hidden=25, epochs=2100) was selected based on validation R². The deep learning approach excels at capturing non-linear dependencies in the transformed traffic data.} 
-\textbf{(326 characters)}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{images/TrafficTwoMonth/models_evalution/ARIMA/traffic_30min_first_diff_arima_R2_study_multi (1).png}
+\caption{Hyperparameter study: best VAR configuration (lag=4) – multivariate}
+\label{fig:var_study}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{images/TrafficTwoMonth/models_evalution/ARIMA/traffic_30min_first_diff_var_forecast_30.png}
+\caption{Forecasting plots obtained with the best VAR model (predictions in red vs actual test data in pink) – multivariate}
+\label{fig:var_forecast}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{images/TrafficTwoMonth/models_evalution/ARIMA/traffic_30min_first_diff_var_eval_30.png}
+\caption{Performance metrics of the best VAR model (RMSE, MAE, MAPE, R²) – multivariate}
+\label{fig:var_eval}
+
+\end{figure}
+
+\subsection*{LSTMs Model}
+
+We tuned LSTM with sequence lengths 3-6, hidden units 20-50, and up to 2500 epochs using Adam and MSE. The study (Figure \ref{fig:lstm_study}) identifies the best univariate setup was seq=4, hidden=25, epochs=2100, reaching test R² ~0.91.The forecasting plot (Figure \ref{fig:lstm_forecast}) closely matched test data, capturing trends and irregularities.Metrics (Figure \ref{fig:lstm_eval}) report test RMSE ~0.20, MAE ~0.15, MAPE ~13\%, R² 0.84.In the multivariate case, similar tuning led to stable R² ~0.87 and better generalization across variables.
 
 \begin{figure}[H]
 \centering
@@ -1448,7 +1471,30 @@ Stationarity analysis shows that the series is stationary at finer granularities
 \label{fig:lstm_eval}
 \end{figure}
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.7\textwidth]{images/TrafficTwoMonth/models_evalution/LSTM/Screenshot 2026-01-03 162427.png}
+\caption{Hyperparameter study: best LSTM configuration – multivariate}
+\label{fig:lstm_study_ml}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{images/TrafficTwoMonth/models_evalution/LSTM/traffic_30min_first_diff_lstm_multivariate_r2_forecast_15 (1).png}
+\caption{Forecasting plots obtained with the best LSTM model (predictions in red vs actual test data in pink) – multivariate}
+\label{fig:lstm_forecast_ml}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{images/TrafficTwoMonth/models_evalution/LSTM/traffic_30min_first_diff_lstm_multivariate_r2_eval (1).png}
+\caption{Performance metrics of the best LSTM model (RMSE, MAE, MAPE, R²) – multivariate}
+\label{fig:lstm_eval_ml}
+\end{figure}
+
+
 \section{CRITICAL ANALYSIS}
-\ctext[RGB]{190,190,190}{Shall be used to present a summary of the results achieved with the different forecasting techniques, and the impact of the different preparation tasks on their performance. A critical assessment of the best models shall be presented, clearly stating if the models seem to be good enough for the problem at hand. Additional charts may be presented here.  \textbf{Shall not exceed 2000 characters.}}
+The forecasting models showed distinct performance differences on the processed traffic data. Exponential smoothing performed the worst, with test R² near zero, very high MAPE, and poor ability to follow variability, making it unsuitable for this task.ARIMA and VAR fit the training data well but generalized poorly, with low test R² ($\approx$ 0.08 and 0.06). Both models captured overall trends but failed on sharp fluctuations due to their linear assumptions and limited flexibility.MLP delivered stronger results, reaching R² $\approx$ 0.86 and capturing nonlinear patterns more effectively, though at a higher computational cost. LSTM clearly outperformed all other models.The univariate version reached R² $\approx$ 0.84, while the multivariate version achieved $\approx$ 0.87, with lower RMSE and MAPE.LSTM handled sequential dependencies, irregularities, and local variations better than statistical models and even better than MLP, making it the most reliable option for medium-term traffic forecasting.
+Aggregating the data into 30-minute intervals reduced high-frequency noise and exposed clearer temporal patterns. Smoothing with a window of 15 further stabilized the series without removing essential structure.Avoiding differencing prevented unnecessary noise amplification, since the aggregated and smoothed series was already close to stationary.Scaling was essential for neural models, ensuring stable gradients and faster convergence.Together, these steps transformed noisy raw data into a predictable signal that models could learn effectively.
 
 \end{document}
