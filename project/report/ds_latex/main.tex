@@ -340,15 +340,25 @@ The sparsity analysis reveals uneven domain coverage across variables, with seve
 In Dataset~2, airline categories were ordinal-encoded according to market relevance. Time-block fields were converted to ordinal values (0--18). Cyclic variables (e.g., Quarter) were transformed using sin/cos encoding and the original columns removed. Numeric fields were kept unchanged, and redundant or leakage-prone columns had been removed earlier.
 
 \subsection*{\textit{Missing Value Imputation}}
-\ctext[RGB]{190,190,190}{Shall contain all relevant information and charts respecting to missing values imputation, such as the choices made and the impact of the different approaches on modelling results. Shall also clearly reveal the approach selected to proceed with the processing. If not applied explain the reason for that, based on data characteristics.  \textbf{Shall not exceed 500 characters.}}
+
+For the dataset 1, dropping records was compared with mode imputation. Imputation yielded higher performance , improving KNN accuracy from 0.51 (drop) to 0.54 (impute). Thus, mode imputation was selected to prevent data loss. 
 
 In Dataset 2, after removing leakage-prone columns, no missing values were found in the remaining variables. Therefore, imputation was not required and no method (filling or dropping) had any effect on the dataset.
 
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{images/}
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{images/traffic_accidents/data_preparation/MV/traffic_mvi_drop_eval.png}
+\caption{Drop}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{images/traffic_accidents/data_preparation/MV/traffic_mvi_impute_eval.png}
+\caption{Impute}
+\end{subfigure}
 \caption{Missing values imputation results with different approaches for dataset 1}
 \end{figure}
+
 
 \begin{figure}[H]
 \centering
@@ -370,14 +380,26 @@ In Dataset 2, after removing leakage-prone columns, no missing values were found
 \end{figure}
 
 \subsection*{\textit{Outliers Treatment}}
-\ctext[RGB]{190,190,190}{Shall contain all relevant information and charts respecting to outliers imputation, such as the choices made and the impact of the different approaches on modelling results. Shall also clearly reveal the approach selected to proceed with the processing. If not applied explain the reason for that, based on data characteristics.  \textbf{Shall not exceed 500 characters.}}
+
+For Dataset 1, two approaches were tested: "Keep Outliers" and "Remove Outliers (Z-Score and Isolation Forest)". "Keep Outliers" yielded better accuracy (NB: 0.56, KNN: 0.54) compared to removal strategies (Z-Score: 0.55, Isolation Forest: 0.55). Thus, no outliers were removed.  
 
 For Dataset 2, outliers in CRSElapsedTime, Distance and airline codes were treated by dropping, median replacement, and truncation. Dropping was chosen as it delivered the best results (NB acc. 0.94, KNN 0.89)
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{images/traffic_accidents/data_preparation/Outliers/traffic_outliers_remove_eval.png}
+\caption{Drop outliers}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{images/traffic_accidents/data_preparation/Outliers/traffic_outliers_keep_eval.png}
+\caption{Keep outliers}
+\end{subfigure}
 \caption{Outliers imputation results with different approaches for dataset 1}
 \end{figure}
+
+
 \begin{figure}[H]
 \centering
 \begin{subfigure}{0.45\textwidth}
@@ -400,14 +422,25 @@ For Dataset 2, outliers in CRSElapsedTime, Distance and airline codes were treat
 \end{figure}
 
 \subsection*{\textit{Scaling}}
-\ctext[RGB]{190,190,190}{Shall contain all relevant information and charts respecting to scaling transformation, such as the choices made and the impact of the different approaches on modelling results. Shall also clearly reveal the approach selected to proceed with the processing. If not applied explain the reason for that, based on data characteristics.  \textbf{Shall not exceed 200 characters.}}
+
+For Dataset 1 StandardScaler outperformed MinMaxScaler as it improved KNN auc to 0.68 compared to 0.67. Flights: MinMaxScaler outperformed ABSScaler with the best performance - NB acc. 0.94, KNN 0.89.
 
 The Dataset 2 numeric variables were scaled using ABSScaler, MinMaxScaler. MinMaxScaler was selected as it yielded the best model performance (NB acc. 0.94, KNN 0.89).
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{traffic_accidents/data_preparation/Scaling/traffic_scaling_minmax_eval.png}
+\caption{MinMaxScaler}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{traffic_accidents/data_preparation/Scaling/traffic_scaling_standard_eval.png}
+\caption{StandardScaler}
+\end{subfigure}
 \caption{Scaling results with different approaches for dataset 1}
 \end{figure}
+
 
 \begin{figure}[H]
 \centering
@@ -425,15 +458,25 @@ The Dataset 2 numeric variables were scaled using ABSScaler, MinMaxScaler. MinMa
 \end{figure}
 
 \subsection*{\textit{Balancing}}
-\ctext[RGB]{190,190,190}{Shall contain all relevant information and charts respecting to balancing transformation, such as the choices made and the impact of the different approaches on modelling results. Shall also clearly reveal the approach selected to proceed with the processing. If not applied explain the reason for that, based on data characteristics.  \textbf{Shall not exceed 500 characters.}}
+
+For Dataset 1, Random Undersampling and SMOTE were evaluated. Undersampling was selected (KNN acc 0.67) as it achieved a slightly higher recall (0.78) compared to SMOTE (recall 0.77). 
 
 The Dataset 2 was balanced using Random Undersampling, Random Oversampling, and SMOTE. Random Undersampling was chosen as it provided the best model performance (NB acc. 0.62, KNN 0.73).
 
-
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{images/traffic_accidents/data_preparation/Balancing/traffic_balancing_under_eval.png}
+\caption{Random Undersampling}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{images/traffic_accidents/data_preparation/Balancing/traffic_balancing_smote_eval.png}
+\caption{SMOTE}
+\end{subfigure}
 \caption{Balancing results with different approaches for dataset 1}
 \end{figure}
+
 
 \begin{figure}[H]
 \centering
@@ -457,13 +500,28 @@ The Dataset 2 was balanced using Random Undersampling, Random Oversampling, and 
 \end{figure}
 
 \subsection*{\textit{Feature Selection}}
-\ctext[RGB]{190,190,190}{Shall contain all relevant information and charts respecting to feature selection based on filtering out redundant (based on correlation) and relevant (based on variation) variables. The different choices and their impact on the modelling results shall be presented and explained. Should also clearly reveal the approach selected to proceed with the processing. All explanations shall be based on data characteristics.  \textbf{Shall not exceed 500 characters.}}
+
+For Dataset 1, the Variance filter (threshold 0.8) retained all features due to standardization. The Redundancy filter (correlation > 0.75) was selected as it effectively reduced dimensionality, achieving the best trade-off with KNN Recall 0.78 and Accuracy 0.67.
 
 For Dataset 2, feature selection was performed using redundant and relevant variable analysis. Redundant variables were identified via correlation analysis and removed. Relevant variables were selected based on variance thresholds. The final feature set improved model performance (NB acc. 0.62, KNN 0.68).
 
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{images/traffic_accidents/data_preparation/FeatureSelection/traffic_selection_correlation_eval.png}
+\caption{Correlation Evaluation}
+\end{subfigure}
+\bigskip
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{images/traffic_accidents/data_preparation/FeatureSelection/traffic_selection_variance_eval.png}
+\caption{Variance Evaluation}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{images/traffic_accidents/data_preparation/FeatureSelection/traffic_selection_variance_plot.png}
+\caption{Variance Plot}
+\end{subfigure}
 \caption{Feature selection of redundant variables results with different parameters for dataset 1}
 \end{figure}
 
