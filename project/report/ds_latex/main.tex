@@ -905,9 +905,7 @@ The modeling phase revealed distinct performance patterns across both datasets. 
 
 In Dataset 2 (Flight Cancellations), metrics were generally higher but skewed. While Gradient Boosting achieved a remarkable 0.97 accuracy, and the Decision Tree reached 0.81, these figures are deceptive. A cross-analysis shows a recurring failure across KNN, Logistic Regression, and Gradient Boosting to achieve high Recall for Class 1. These models biased toward the majority class (Class 0), resulting in high precision but failing to identify actual cancellations. The MLP (0.79) and Random Forest (0.75) provided the most reliable generalization with smoother convergence.
 
-Preparation tasks had a moderate impact on performance. The alignment of BernoulliNB with binary features and the success of Manhattan distance in KNN suggest that the initial feature encoding was beneficial for high-dimensional sparsity. However, the persistent class imbalance in Dataset 2 significantly hindered the predictive power of distance-based and linear models, suggesting that more aggressive resampling or synthetic data generation (SMOTE) could have improved the results further.
-
-
+Preparation tasks had a moderate impact on performance. The alignment of BernoulliNB with binary features and the success of Manhattan distance in KNN suggest that the initial feature encoding was beneficial for high-dimensional sparsity. 
 
 The models developed for Dataset 1 are promising, showing balanced Precision and Recall, though they may require further feature engineering to break the 0.75 accuracy ceiling. For Dataset 2, despite high accuracy scores (up to 0.97), the models are currently not sufficient for real-world application due to poor Recall on the minority class. While the MLP shows the healthiest learning curve, the overall framework requires better handling of class imbalance before it can be considered a robust solution for flight cancellation forecasting.
 
