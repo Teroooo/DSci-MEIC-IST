@@ -337,7 +337,7 @@ The sparsity analysis reveals uneven domain coverage across variables, with seve
 \section{DATA PREPARATION}
 
 \subsection*{\textit{Variables Encoding}}
-In Dataset~2, airline categories were ordinal-encoded according to market relevance. Time-block fields were converted to ordinal values (0--18). Cyclic variables (e.g., Quarter) were transformed using sine/cosine encoding and the original columns removed. Numeric fields were kept unchanged, and redundant or leakage-prone columns had been removed earlier.
+In Dataset~2, airline categories were ordinal-encoded according to market relevance. Time-block fields were converted to ordinal values (0--18). Cyclic variables (e.g., Quarter) were transformed using sin/cos encoding and the original columns removed. Numeric fields were kept unchanged, and redundant or leakage-prone columns had been removed earlier.
 
 \subsection*{\textit{Missing Value Imputation}}
 \ctext[RGB]{190,190,190}{Shall contain all relevant information and charts respecting to missing values imputation, such as the choices made and the impact of the different approaches on modelling results. Shall also clearly reveal the approach selected to proceed with the processing. If not applied explain the reason for that, based on data characteristics.  \textbf{Shall not exceed 500 characters.}}
@@ -372,7 +372,7 @@ In Dataset 2, after removing leakage-prone columns, no missing values were found
 \subsection*{\textit{Outliers Treatment}}
 \ctext[RGB]{190,190,190}{Shall contain all relevant information and charts respecting to outliers imputation, such as the choices made and the impact of the different approaches on modelling results. Shall also clearly reveal the approach selected to proceed with the processing. If not applied explain the reason for that, based on data characteristics.  \textbf{Shall not exceed 500 characters.}}
 
-For Dataset 2, outliers in CRSElapsedTime, Distance and airline codes were treated by dropping, median replacement or truncation. Dropping was chosen as it delivered the best results (NB acc. 0.94, KNN 0.89)
+For Dataset 2, outliers in CRSElapsedTime, Distance and airline codes were treated by dropping, median replacement, and truncation. Dropping was chosen as it delivered the best results (NB acc. 0.94, KNN 0.89)
 
 \begin{figure}[H]
 %\centering\includegraphics[scale=0.95]{}
@@ -617,7 +617,7 @@ For Dataset 2, feature selection was performed using redundant and relevant vari
 
 
 \subsection*{\textit{Decision Trees}}
-Decision trees behave differently across the two datasets.In Dataset~1, accuracy peaks around depth~6--8 (approximately 0.72) and then declines slightly.The best model (entropy, depth~6) reaches 0.74 accuracy with balanced precision and recall; key features include \textit{crash\_type}, \textit{damage}, \textit{dry\_cause}, \textit{num\_units}, and \textit{ash\_date}. In Dataset~2, entropy performs better, although deep trees overfit.The best model (depth~16) achieves 0.88 accuracy.
+Decision trees behave differently across the two datasets.In Dataset~1, accuracy peaks early (depth 6-8, ~0.75) then slightly declines, showing mild overfitting.The best model (entropy, depth~6) reaches 0.74 accuracy with balanced precision and recall; key features include \textit{crash\_type}, \textit{damage}, \textit{dry\_cause}, \textit{num\_units}, and \textit{ash\_date}. In Dataset~2, entropy slightly outperforms gini, although deep trees overfit.The best model (gini, depth 16) achieves 0.81 test accuracy.
 \begin{figure}[H]
 \centering\includegraphics[scale=0.5]{traffic_accidents/models_eval/DT/Traffic_dt_accuracy_study.png}
 \caption{Decision Trees different parameterisations comparison for dataset 1}
@@ -663,7 +663,7 @@ Decision trees behave differently across the two datasets.In Dataset~1, accuracy
 \end{figure}
 
 \subsection*{\textit{Random Forests}}
-Random forests improve steadily in both datasets.In Dataset~1, the best model (depth~5, feature fraction~0.5, 750 trees) reaches 0.72 test accuracy with balanced metrics.In Dataset~2, accuracy increases quickly with more trees and moderate depth.The best configuration (depth~7, feature fraction~0.3, 750 trees) achieves 0.79 accuracy.
+Random forests improve steadily in both datasets.In Dataset~1, accuracy increases quickly and stabilizes. The best model (depth~5, feature fraction~0.5, 750 trees) reaches 0.72 test accuracy with balanced metrics.In Dataset~2, performance remains stable across configurations.The best configuration (max depth~7, feature fraction~0.7, 500 trees) achieves 0.75 test accuracy, with strong precision (0.86) but lower recall (0.60).
 \begin{figure}[H]
 \centering\includegraphics[scale=0.5]{traffic_accidents/models_eval/RF/Traffic_rf_accuracy_study.png}
 \caption{Random Forests different parameterisations comparison for dataset 1}
