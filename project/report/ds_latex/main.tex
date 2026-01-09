@@ -509,18 +509,18 @@ For Dataset 2, feature selection was performed using redundant and relevant vari
 \begin{figure}[H]
 \centering
 \begin{subfigure}{0.45\textwidth}
-\centering\includegraphics[width=\textwidth]{images/traffic_accidents/data_preparation/FeatureSelection/traffic_selection_correlation_eval.png}
-\caption{Correlation Evaluation}
-\end{subfigure}
-\bigskip
-\begin{subfigure}{0.45\textwidth}
-\centering\includegraphics[width=\textwidth]{images/traffic_accidents/data_preparation/FeatureSelection/traffic_selection_variance_eval.png}
-\caption{Variance Evaluation}
+\centering\includegraphics[width=\textwidth]{images/traffic_accidents/data_preparation/FeatureSelection/var_study.jpeg}
+\caption{Redundant variables removal}
 \end{subfigure}
 \hfill
 \begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{images/traffic_accidents/data_preparation/FeatureSelection/traffic_selection_correlation_eval.png}
+\caption{Variance Evaluation(variance threshold study)}
+\end{subfigure}
+\bigskip
+\begin{subfigure}{0.45\textwidth}
 \centering\includegraphics[width=\textwidth]{images/traffic_accidents/data_preparation/FeatureSelection/traffic_selection_variance_plot.png}
-\caption{Variance Plot}
+\caption{Variance Evaluation plot}
 \end{subfigure}
 \caption{Feature selection of redundant variables results with different parameters for dataset 1}
 \end{figure}
@@ -542,7 +542,16 @@ For Dataset 2, feature selection was performed using redundant and relevant vari
 
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{images/traffic_accidents/data_preparation/FeatureSelection/var_study2.jpeg}
+\caption{Redundant variables removal}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{images/traffic_accidents/data_preparation/FeatureSelection/traffic_selection_variance_eval.png}
+\caption{Variance Evaluation(variance threshold study)}
+\end{subfigure}
 \caption{Feature selection of relevant variables results with different parameters for dataset 1 (variance study)} 
 \end{figure}
 
@@ -562,19 +571,34 @@ For Dataset 2, feature selection was performed using redundant and relevant vari
 
 
 \section{MODELS' EVALUATION}
-\ctext[RGB]{190,190,190}{Shall be used to point out any important decision taken during the training, including training strategy and evaluation measures used.  \textbf{Shall not exceed 500 characters.}}
 
 \subsection*{\textit{Na{\"i}ve Bayes}}
-\ctext[RGB]{190,190,190}{Shall be used to present the results achieved with each one of Na{\"i}ve Bayes implementations, comparing and proposing explanations for them. If any of the implementations is not used, a justification for it shall be presented. Shall be used to present the evaluation of the best model achieved.  \textbf{Shall not exceed 300 characters.}}
+
+The Naïve Bayes variants show similar accuracy, with BernoulliNB achieving the best results on both datasets due to better alignment with binary feature representations. The best model was evaluated using accuracy, precision, recall, F1-score, and confusion matrices.
 
 \begin{figure}[H]
-\centering\includegraphics[scale=0.5]{traffic_accidents/models_eval/NB/traffic accidents_nb_accuracy_study.png}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{traffic_accidents/models_eval/NB/traffic accidents_nb_accuracy_study.png}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{traffic_accidents/models_eval/NB/traffic accidents_nb_recall_study.png}
+\end{subfigure}
 \caption{Na{\"i}ve Bayes alternatives comparison for dataset 1}
 \end{figure}
 
+
 \begin{figure}[H]
-\centering\includegraphics[scale=0.5]{Combined_Flights_2022/models_eval/NB/Combined_flight_v1_nb_accuracy_study.png}
-\caption{Na{\"i}ve Bayes alternative comparison for dataset 2}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{Combined_Flights_2022/models_eval/NB/Combined_flight_v1_nb_accuracy_study.png}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{Combined_Flights_2022/models_eval/NB/Combined_flight_v1_nb_recall_study.png}
+\end{subfigure}
+\caption{Na{\"i}ve Bayes alternatives comparison for dataset 2}
 \end{figure}
 
 \begin{figure}[H]
