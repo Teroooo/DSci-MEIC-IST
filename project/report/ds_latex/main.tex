@@ -337,36 +337,72 @@ The sparsity analysis reveals uneven domain coverage across variables, with seve
 \section{DATA PREPARATION}
 
 \subsection*{\textit{Variables Encoding}}
-\ctext[RGB]{190,190,190}{Shall contain all relevant information respecting to the transformation of variables. The list of variables under each one of the transformations, shall be presented. If not applied explain the reason for that, based on data characteristics.  \textbf{Shall not exceed 500 characters \textit{for each dataset.}}}
+In Dataset~2, airline categories were ordinal-encoded according to market relevance. Time-block fields were converted to ordinal values (0--18). Cyclic variables (e.g., Quarter) were transformed using sine/cosine encoding and the original columns removed. Numeric fields were kept unchanged, and redundant or leakage-prone columns had been removed earlier.
 
 \subsection*{\textit{Missing Value Imputation}}
 \ctext[RGB]{190,190,190}{Shall contain all relevant information and charts respecting to missing values imputation, such as the choices made and the impact of the different approaches on modelling results. Shall also clearly reveal the approach selected to proceed with the processing. If not applied explain the reason for that, based on data characteristics.  \textbf{Shall not exceed 500 characters.}}
 
+In Dataset 2, after removing leakage-prone columns, no missing values were found in the remaining variables. Therefore, imputation was not required and no method (filling or dropping) had any effect on the dataset.
+
+
 \begin{figure}[H]
-\centering\includegraphics[scale=0.95]{images/}
+%\centering\includegraphics[scale=0.95]{images/}
 \caption{Missing values imputation results with different approaches for dataset 1}
 \end{figure}
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Missing values imputation results with different approaches for dataset 2}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{images/Combined_Flights_2022/data_preparation/MV/mv.png}
+\caption{Heatmap: No missing values}
+\end{subfigure}
+\bigskip
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{images/Combined_Flights_2022/data_preparation/MV/MV_eval_1.png}
+\caption{Filling imputation (no change)}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{images/Combined_Flights_2022/data_preparation/MV/MV_eval_2.png}
+\caption{Dropping rows (no change)}
+\end{subfigure}
+\caption{Missing values analysis and imputation attempts for dataset 2 (no missings detected)}
 \end{figure}
 
 \subsection*{\textit{Outliers Treatment}}
 \ctext[RGB]{190,190,190}{Shall contain all relevant information and charts respecting to outliers imputation, such as the choices made and the impact of the different approaches on modelling results. Shall also clearly reveal the approach selected to proceed with the processing. If not applied explain the reason for that, based on data characteristics.  \textbf{Shall not exceed 500 characters.}}
 
+For Dataset 2, outliers in CRSElapsedTime, Distance and airline codes were treated by dropping, median replacement or truncation. Dropping was chosen as it delivered the best results (NB acc. 0.94, KNN 0.89)
+
 \begin{figure}[H]
 %\centering\includegraphics[scale=0.95]{}
 \caption{Outliers imputation results with different approaches for dataset 1}
 \end{figure}
-
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Outliers imputation results with different approaches for dataset 2}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{images/Combined_Flights_2022/data_preparation/Outliers/Outliers_drop.png}
+\caption{Drop outliers (selected)}
+\end{subfigure}
+
+\bigskip
+
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{images/Combined_Flights_2022/data_preparation/Outliers/Outliers_replacing.png}
+\caption{Replace with median}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{images/Combined_Flights_2022/data_preparation/Outliers/Outliers__truncate.png}
+\caption{Truncate}
+\end{subfigure}
+\caption{Impact of different outlier treatments on NB and KNN performance for dataset 2}
 \end{figure}
 
 \subsection*{\textit{Scaling}}
 \ctext[RGB]{190,190,190}{Shall contain all relevant information and charts respecting to scaling transformation, such as the choices made and the impact of the different approaches on modelling results. Shall also clearly reveal the approach selected to proceed with the processing. If not applied explain the reason for that, based on data characteristics.  \textbf{Shall not exceed 200 characters.}}
+
+The Dataset 2 numeric variables were scaled using ABSScaler, MinMaxScaler. MinMaxScaler was selected as it yielded the best model performance (NB acc. 0.94, KNN 0.89).
 
 \begin{figure}[H]
 %\centering\includegraphics[scale=0.95]{}
@@ -374,12 +410,25 @@ The sparsity analysis reveals uneven domain coverage across variables, with seve
 \end{figure}
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Scaling results with different approaches for dataset 2}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{Combined_Flights_2022/data_preparation/Scaling/Scalling_minMAX.png}
+\caption{MinMaxScaler (selected)}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\centering
+\includegraphics[width=0.8\textwidth]{Combined_Flights_2022/data_preparation/Scaling/Scalling_ABS.png}
+\caption{ABSScaler}
+\end{subfigure}
+\caption{Scaling results with different approaches (NB and KNN performance) for dataset 2}
 \end{figure}
 
 \subsection*{\textit{Balancing}}
 \ctext[RGB]{190,190,190}{Shall contain all relevant information and charts respecting to balancing transformation, such as the choices made and the impact of the different approaches on modelling results. Shall also clearly reveal the approach selected to proceed with the processing. If not applied explain the reason for that, based on data characteristics.  \textbf{Shall not exceed 500 characters.}}
+
+The Dataset 2 was balanced using Random Undersampling, Random Oversampling, and SMOTE. Random Undersampling was chosen as it provided the best model performance (NB acc. 0.62, KNN 0.73).
+
 
 \begin{figure}[H]
 %\centering\includegraphics[scale=0.95]{}
@@ -387,22 +436,52 @@ The sparsity analysis reveals uneven domain coverage across variables, with seve
 \end{figure}
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Balancing results with different approaches for dataset 2}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{images/Combined_Flights_2022/data_preparation/Balancing/Balancing_Under_eval.png}
+\caption{Random Undersampling (selected)}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{images/Combined_Flights_2022/data_preparation/Balancing/Balancing_Over_eval.png}
+\caption{Random Oversampling}
+\end{subfigure}
+
+\bigskip
+
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{images/Combined_Flights_2022/data_preparation/Balancing/Balancing_SMOTE_eval.png}
+\caption{SMOTE}
+\end{subfigure}
+\caption{Balancing results with different approaches (NB and KNN performance) for dataset 2}
 \end{figure}
 
 \subsection*{\textit{Feature Selection}}
 \ctext[RGB]{190,190,190}{Shall contain all relevant information and charts respecting to feature selection based on filtering out redundant (based on correlation) and relevant (based on variation) variables. The different choices and their impact on the modelling results shall be presented and explained. Should also clearly reveal the approach selected to proceed with the processing. All explanations shall be based on data characteristics.  \textbf{Shall not exceed 500 characters.}}
+
+For Dataset 2, feature selection was performed using redundant and relevant variable analysis. Redundant variables were identified via correlation analysis and removed. Relevant variables were selected based on variance thresholds. The final feature set improved model performance (NB acc. 0.62, KNN 0.68).
+
 
 \begin{figure}[H]
 %\centering\includegraphics[scale=0.95]{}
 \caption{Feature selection of redundant variables results with different parameters for dataset 1}
 \end{figure}
 
+
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Feature selection of redundant variables results with different parameters for dataset 2}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{images/Combined_Flights_2022/data_preparation/FeatureSelection/red_study.png}
+\caption{Redundant variables removal (correlation matrix/threshold)}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{images/Combined_Flights_2022/data_preparation/FeatureSelection/FS_high_corr.png}
+\caption{Relevant variables selection (variance threshold study)}
+\end{subfigure}
+\caption{Feature selection results for redundant and low-variance variables in dataset 2}
 \end{figure}
+
 
 \begin{figure}[H]
 %\centering\includegraphics[scale=0.95]{}
@@ -410,21 +489,17 @@ The sparsity analysis reveals uneven domain coverage across variables, with seve
 \end{figure}
 
 \begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Feature selection of relevant variables results with different parameters for dataset 2 (variance study)}
-\end{figure}
-
-\subsection*{\textit{Feature Extraction (optional)}}
-\ctext[RGB]{190,190,190}{Shall contain all relevant information and charts respecting to feature extraction, in particular PCA. The different choices and their impact on the modelling results shall be presented and explained.  \textbf{Shall not exceed 200 characters.}}
-
-\begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Principal components analysis and feature extraction results for dataset 1}
-\end{figure}
-
-\begin{figure}[H]
-%\centering\includegraphics[scale=0.95]{}
-\caption{Principal components analysis and feature extraction results for dataset 2}
+\centering
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{images/Combined_Flights_2022/data_preparation/FeatureSelection/var_study.png}
+\caption{Redundant variables removal (correlation matrix/threshold)}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\centering\includegraphics[width=\textwidth]{images/Combined_Flights_2022/data_preparation/FeatureSelection/FS_drop.png}
+\caption{Relevant variables selection (variance threshold study)}
+\end{subfigure}
+\caption{Feature selection of relevant variables results with different parameters for dataset  2 (variance study)}
 \end{figure}
 
 
@@ -542,7 +617,7 @@ The sparsity analysis reveals uneven domain coverage across variables, with seve
 
 
 \subsection*{\textit{Decision Trees}}
-Decision trees behave differently across the two datasets.In Dataset~1, accuracy peaks around depth~6--8 (approximately 0.72) and then declines slightly.The best model (entropy, depth~6) reaches 0.74 accuracy with balanced precision and recall; key features include \textit{crash\_type}, \textit{damage}, \textit{dry\_cause}, \textit{num\_units}, and \textit{ash\_date}. In Dataset~2, entropy performs better, although deep trees overfit.The best model (depth~24) achieves 0.87 accuracy.
+Decision trees behave differently across the two datasets.In Dataset~1, accuracy peaks around depth~6--8 (approximately 0.72) and then declines slightly.The best model (entropy, depth~6) reaches 0.74 accuracy with balanced precision and recall; key features include \textit{crash\_type}, \textit{damage}, \textit{dry\_cause}, \textit{num\_units}, and \textit{ash\_date}. In Dataset~2, entropy performs better, although deep trees overfit.The best model (depth~16) achieves 0.88 accuracy.
 \begin{figure}[H]
 \centering\includegraphics[scale=0.5]{traffic_accidents/models_eval/DT/Traffic_dt_accuracy_study.png}
 \caption{Decision Trees different parameterisations comparison for dataset 1}
@@ -583,7 +658,7 @@ Decision trees behave differently across the two datasets.In Dataset~1, accuracy
 \end{figure}
 
 \begin{figure}[H]
-\centering\includegraphics[width=0.7\textwidth]{Combined_Flights_2022/models_eval/DT/Flight_dt_accuracy_best_tree_V2.png}
+\centering\includegraphics[width=0.7\textwidth]{Combined_Flights_2022/models_eval/DT/Flight_dt_accuracy_best_tree.png}
 \caption{Best tree for dataset 2}
 \end{figure}
 
@@ -859,9 +934,12 @@ We tested 30‑minute, hourly, daily, and weekly aggregations to see how each le
     \caption{Hourly Aggregation}
     \label{fig:agg:hourly}
 \end{subfigure}
+\end{figure}
+
 
 \vspace{1em}
-
+\begin{figure}[H]
+\centering
 \begin{subfigure}[b]{0.3\textwidth}
     \centering
     \includegraphics[width=\textwidth]{images/TrafficTwoMonth/data_transformation/Aggr/traffic_daily_aggregation.png}

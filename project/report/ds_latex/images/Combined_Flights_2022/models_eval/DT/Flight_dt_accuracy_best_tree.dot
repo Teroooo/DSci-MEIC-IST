@@ -1,0 +1,37 @@
+digraph Tree {
+node [shape=box, style="filled, rounded", color="black", fontname="helvetica"] ;
+edge [fontname="helvetica"] ;
+0 [label=<Tail_Number &le; 0.0<br/>samples = 172468<br/>value = [86234, 86234]<br/>class = 0>, fillcolor="#ffffff"] ;
+1 [label=<samples = 18730<br/>value = [0, 18730]<br/>class = 1>, fillcolor="#399de5"] ;
+0 -> 1 [labeldistance=2.5, labelangle=45, headlabel="True"] ;
+2 [label=<FlightDate &le; 0.17<br/>samples = 153738<br/>value = [86234, 67504]<br/>class = 0>, fillcolor="#f9e4d4"] ;
+0 -> 2 [labeldistance=2.5, labelangle=-45, headlabel="False"] ;
+3 [label=<DayofMonth_cos &le; 0.8<br/>samples = 38290<br/>value = [13513, 24777]<br/>class = 1>, fillcolor="#a5d2f3"] ;
+2 -> 3 ;
+4 [label=<FlightDate &le; 0.03<br/>samples = 17355<br/>value = [8659, 8696]<br/>class = 1>, fillcolor="#feffff"] ;
+3 -> 4 ;
+5 [label="(...)", fillcolor="#C0C0C0"] ;
+4 -> 5 ;
+582 [label="(...)", fillcolor="#C0C0C0"] ;
+4 -> 582 ;
+2085 [label=<Operating_Airline &le; 0.92<br/>samples = 20935<br/>value = [4854, 16081]<br/>class = 1>, fillcolor="#75bbed"] ;
+3 -> 2085 ;
+2086 [label="(...)", fillcolor="#C0C0C0"] ;
+2085 -> 2086 ;
+3461 [label="(...)", fillcolor="#C0C0C0"] ;
+2085 -> 3461 ;
+3934 [label=<CRSDepTime &le; 0.65<br/>samples = 115448<br/>value = [72721, 42727]<br/>class = 0>, fillcolor="#f4cbad"] ;
+2 -> 3934 ;
+3935 [label=<Marketing_Airline_Network &le; 0.72<br/>samples = 66470<br/>value = [45118, 21352]<br/>class = 0>, fillcolor="#f1bd97"] ;
+3934 -> 3935 ;
+3936 [label="(...)", fillcolor="#C0C0C0"] ;
+3935 -> 3936 ;
+6293 [label="(...)", fillcolor="#C0C0C0"] ;
+3935 -> 6293 ;
+8258 [label=<Operating_Airline &le; 0.28<br/>samples = 48978<br/>value = [27603, 21375]<br/>class = 0>, fillcolor="#f9e3d2"] ;
+3934 -> 8258 ;
+8259 [label="(...)", fillcolor="#C0C0C0"] ;
+8258 -> 8259 ;
+9342 [label="(...)", fillcolor="#C0C0C0"] ;
+8258 -> 9342 ;
+}
