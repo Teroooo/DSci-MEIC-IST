@@ -44,16 +44,16 @@ def knn_study(
 
     return best_model, best_params
 
-file_tag = 'traffic'
-train_filename = '../../../../traffic_final_train.csv'
-test_filename = '../../../../traffic_final_test.csv'
-target = 'crash_type'
-#file_tag = "cflights"
-#train_filename = '../../../../cflights_train.csv'
-#test_filename = '../../../../cflights_test.csv'
-#target = "Cancelled"
+#file_tag = 'traffic'
+#train_filename = '../traffic_train.csv'
+#test_filename = '../traffic_test.csv'
+#target = 'crash_type'
+file_tag = "cflights"
+train_filename = '../cflights_train.csv'
+test_filename = '../cflights_test.csv'
+target = "Cancelled"
 eval_metric = 'accuracy'
-sample_frac: float = 0.1  # fraction of data to use (0 < sample_frac <= 1]
+sample_frac: float = 0.01  # fraction of data to use (0 < sample_frac <= 1]
 
 trnX, tstX, trnY, tstY, labels, vars = read_train_test_from_files(train_filename, test_filename, target)
 
