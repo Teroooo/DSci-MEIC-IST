@@ -74,7 +74,7 @@
 \end{center}
 
 \section{DATA PROFILING}
-\ctext[RGB]{190,190,190}{May be used to describe any useful observation about the data, and that was used in the current project. An example is the use of any domain knowledge to process the data or evaluate the results. \textbf{Shall not exceed 200 characters.}}
+
 
 \subsection*{\textit{Data Dimensionality}}
 
@@ -614,7 +614,8 @@ The Naïve Bayes variants show similar accuracy, with BernoulliNB achieving the 
 \end{figure}
 
 \subsection*{\textit{KNN}}
-\ctext[RGB]{190,190,190}{Shall be used to present the results achieved through different similarity measures and KNN parameterisations. The results shall be compared and explanations for them shall be presented. The justification for the chosen similarity measures shall be presented. Shall be used to address the overfitting phenomenon, studying the conditions under which models face it. Shall be used to present the evaluation of the best model achieved.  \textbf{Shall not exceed 500 characters.}}
+
+KNN favors Manhattan distance in both datasets, likely due to better handling of high-dimensional sparsity. In Dataset 1, accuracy improves with k, mitigating overfitting; the best model (k=17, Manhattan) achieves 0.66 accuracy with balanced predictions. Conversely, Dataset 2 shows declining accuracy as k increases. The best model (k=1, Manhattan) yields 0.71 accuracy but suffers from severe overfitting and class imbalance, predicting mostly Class 0 (low recall).
 
 \begin{figure}[H]
 \centering\includegraphics[scale=0.5]{traffic_accidents/models_eval/KNN/traffic_knn_accuracy_study.png}
@@ -652,6 +653,12 @@ The Naïve Bayes variants show similar accuracy, with BernoulliNB achieving the 
 
 
 \subsection*{\textit{Logistic Regression}}
+
+Logistic Regression proves robust to parameter changes, showing flat accuracy across iterations for both regularizers. In Dataset 1, mild overfitting occurs (Train>Test). 
+The best model (l1, 500 iter) achieves 0.65 accuracy, driven primarily by first\_crash\_type and damage. 
+
+In Dataset 2, the model biases heavily toward the majority class, achieving 0.70 accuracy but failing to capture Class 1 (poor recall). 
+Distance and CRSElapsedTime are the top predictors.
 
 \begin{figure}[H]
 \centering\includegraphics[scale=0.5]{traffic_accidents/models_eval/LR/traffic_lr_accuracy_study.png}
@@ -793,7 +800,8 @@ Random forests improve steadily in both datasets.In Dataset~1, accuracy increase
 \end{figure}
 
 \subsection*{\textit{Gradient Boosting}}
-\ctext[RGB]{190,190,190}{Shall be used to present the results achieved through different parameterisations for the train of gradient boosting. The results shall be compared and explanations for them shall be presented. Shall be used to address the overfitting phenomenon, studying the conditions under which models face it.  Shall be used to present the evaluation of the best model achieved. May be used to present the most important variables in the model.  \textbf{Shall not exceed 500 characters.}}
+
+In Dataset 1, overfitting appears early; Test F1 peaks at depth 3 and 50 estimators, then declines as complexity increases. The best model achieves 0.70 accuracy with high Recall (0.82) but low Precision (0.64). Conversely, Dataset 2 benefits from increased complexity, showing no overfitting as depth and estimators rise. However, the model suffers from severe class imbalance, achieving near-perfect Precision (0.99) but poor Recall (0.20), failing to identify most cancellations.
 
 \begin{figure}[H]
 \centering\includegraphics[scale=0.5]{traffic_accidents/models_eval/GB/OverfittingAnalysistreedepthimpact.png}
@@ -842,7 +850,8 @@ Random forests improve steadily in both datasets.In Dataset~1, accuracy increase
 \end{figure}
 
 \subsection*{\textit{Multi-Layer Perceptrons}}
-\ctext[RGB]{190,190,190}{Shall be used to present the results achieved through different parameterisations for the train of MLPs. The results shall be compared and explanations for them shall be presented. Shall be used to address the overfitting phenomenon, studying the conditions under which models face it. Shall be used to present the evaluation of the best model achieved.  \textbf{Shall not exceed 500 characters.}}
+
+In Dataset 1, 'constant' and 'adaptive' schedules stabilize quickly, while 'invscaling' struggles. Mild overfitting is evident as training accuracy exceeds testing. The best model (constant, lr=0.5) achieves 0.71 accuracy; however, the loss curve plateaus early, resulting in high Recall (0.75) but lower Precision due to False Positives. Dataset 2 converges smoothly with minimal overfitting. The best model (constant, lr=0.5, 3000 iter) reaches 0.79 accuracy, showing balanced metrics and a healthy, convex loss curve.
 
 \begin{figure}[H]
 \centering\includegraphics[scale=0.5]{traffic_accidents/models_eval/MLP/traffic_accidents_mlp_accuracy_study.png}
@@ -891,9 +900,16 @@ Random forests improve steadily in both datasets.In Dataset~1, accuracy increase
 \end{figure}
 
 \section{CRITICAL ANALYSIS}
-\ctext[RGB]{190,190,190}{Shall be used to present a summary of the results achieved with the different modelling techniques, and the impact of the different preparation tasks on their performance. 
-A cross-analysis of the different models may also be presented, identifying the most relevant variables common to all of them (when possible) and the relation among the patterns identified within the different classifiers.
-A critical assessment of the best models shall be presented, clearly stating if the models seem to be good enough for the problem at hand. \textbf{Additional charts may be presented here.  Shall not exceed 2000 characters.}}
+
+The modeling phase revealed distinct performance patterns across both datasets. In Dataset 1 (Traffic Accidents), the Decision Tree (0.74) and Random Forest (0.72) models emerged as the most balanced, while Naïve Bayes and Logistic Regression struggled with accuracies near 0.65. Key variables like crash\_type and damage were consistently identified as primary predictors across multiple classifiers.
+
+In Dataset 2 (Flight Cancellations), metrics were generally higher but skewed. While Gradient Boosting achieved a remarkable 0.97 accuracy, and the Decision Tree reached 0.81, these figures are deceptive. A cross-analysis shows a recurring failure across KNN, Logistic Regression, and Gradient Boosting to achieve high Recall for Class 1. These models biased toward the majority class (Class 0), resulting in high precision but failing to identify actual cancellations. The MLP (0.79) and Random Forest (0.75) provided the most reliable generalization with smoother convergence.
+
+Preparation tasks had a moderate impact on performance. The alignment of BernoulliNB with binary features and the success of Manhattan distance in KNN suggest that the initial feature encoding was beneficial for high-dimensional sparsity. However, the persistent class imbalance in Dataset 2 significantly hindered the predictive power of distance-based and linear models, suggesting that more aggressive resampling or synthetic data generation (SMOTE) could have improved the results further.
+
+
+
+The models developed for Dataset 1 are promising, showing balanced Precision and Recall, though they may require further feature engineering to break the 0.75 accuracy ceiling. For Dataset 2, despite high accuracy scores (up to 0.97), the models are currently not sufficient for real-world application due to poor Recall on the minority class. While the MLP shows the healthiest learning curve, the overall framework requires better handling of class imbalance before it can be considered a robust solution for flight cancellation forecasting.
 
 
 \begin{center}
