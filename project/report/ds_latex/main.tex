@@ -343,7 +343,7 @@ In Dataset~2, airline categories were ordinal-encoded according to market releva
 
 For the dataset 1, dropping records was compared with mode imputation. Imputation yielded higher performance , improving KNN accuracy from 0.51 (drop) to 0.54 (impute). Thus, mode imputation was selected to prevent data loss. 
 
-In Dataset 2, after removing leakage-prone columns, no missing values were found in the remaining variables. Therefore, imputation was not required and no method (filling or dropping) had any effect on the dataset.
+In Dataset 2, after removing leakage-prone columns, several variables initially contained missing values (e.g., DepTime) and were removed. Only one variable with missing values remained, corresponding to approximately 23k records out of more than 4 million in class 0, making missing values extremely rare. Due to the large dataset size, sampling was applied, and the probability of selecting those few records was very low; as a result, the final sample contained no missing values. Therefore, imputation was not required and no method (filling or dropping) had any effect on the dataset.
 
 
 \begin{figure}[H]
